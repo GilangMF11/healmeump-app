@@ -1,16 +1,33 @@
-# healmeumpapp
+# Aplikasi Heal Me UMP
 
-A new Flutter project.
+Aplikasi Cek Kesehatan Mental Universitas Muhammadiyah Purwokerto
 
-## Getting Started
+## Dokumentasi
 
-This project is a starting point for a Flutter application.
+### Cara Running
 
-A few resources to get you started if this is your first Flutter project:
+flutter run --flavor dev --dart-define=FLAVOR=dev
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+flutter run --flavor staging --dart-define=FLAVOR=staging
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+flutter run --flavor production --dart-define=FLAVOR=production
+
+#### Cara Build Apk
+
+flutter build apk --flavor dev --dart-define=FLAVOR=dev
+
+flutter build apk --flavor staging --dart-define=FLAVOR=staging
+
+flutter build apk --flavor production --dart-define=FLAVOR=production
+
+#### Cara Build Appbundle
+
+flutter build appbundle --flavor dev --dart-define=FLAVOR=dev
+
+flutter build appbundle --flavor staging --dart-define=FLAVOR=staging
+
+flutter build appbundle --flavor production --dart-define=FLAVOR=production
+
+### Versi Flutter 3.27.2
+
+### SDK 35
