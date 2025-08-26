@@ -8,15 +8,26 @@ plugins {
 android {
     namespace = "com.example.healmeumpapp"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    //ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
+
+    // compileOptions {
+    //     sourceCompatibility = JavaVersion.VERSION_1_8
+    //     targetCompatibility = JavaVersion.VERSION_1_8
+    // }
+
+    // kotlinOptions {
+    //     jvmTarget = JavaVersion.VERSION_1_8
+    // }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 
+
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = '21'
     }
 
     defaultConfig {
@@ -35,6 +46,40 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+        }
+    }
+
+    flavorDimensions 'default'
+    productFlavors {
+        production {
+            dimension 'default'
+            applicationId 'com.example.healmeumpapp'
+            resValue "string", "healme", "healmeumpapp"
+        }
+        dev {
+            dimension 'default'
+            applicationId 'com.example.healmeumpapp'
+            applicationIdSuffix '.dev'
+            versionNameSuffix '.dev'
+            resValue "string", "healme", "healmeumpapp.dev"
+        }
+        staging {
+            dimension 'default'
+            applicationId 'com.example.healmeumpapp'
+            applicationIdSuffix '.stg'
+            versionNameSuffix '.stg'
+            resValue "string", "healme", "healmeumpapp.stg"
+        }
+    }
+    sourceSets {
+        dev {
+            res.srcDirs += 'src/dev/res'
+        }
+        production {
+            res.srcDirs += 'src/production/res'
+        }
+        staging {
+            res.srcDirs += 'src/staging/res'
         }
     }
 }
