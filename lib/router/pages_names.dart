@@ -10,7 +10,9 @@ enum PAGESNAMES {
   anxiety,
   stress,
   tips,
-  tipDetails
+  tipDetails,
+  about,
+  support
 
 }
 
@@ -41,6 +43,10 @@ extension AppPageExtension on PAGESNAMES {
         return '/tips';
       case PAGESNAMES.tipDetails:
         return '/tipDetails';
+      case PAGESNAMES.about:
+        return '/about';
+      case PAGESNAMES.support:
+        return '/support';
       }
   }
 
@@ -70,6 +76,10 @@ extension AppPageExtension on PAGESNAMES {
         return 'tips';
       case PAGESNAMES.tipDetails:
         return 'tipDetails';
+      case PAGESNAMES.about:
+        return 'about';
+      case PAGESNAMES.support:
+        return 'support';
     }
   }
 }

@@ -2,7 +2,9 @@ import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:healmeumpapp/features/auth/presentation/pages/login_page.dart';
+import 'package:healmeumpapp/features/home/presentation/about_page.dart';
 import 'package:healmeumpapp/features/home/presentation/home_page.dart';
+import 'package:healmeumpapp/features/home/presentation/support_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/mental_health_counting_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/mental_health_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/mental_health_result_page.dart';
@@ -15,7 +17,7 @@ class RouterNavigation {
   static final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
-    initialLocation: PAGESNAMES.onbroading.ScreenPath,
+    initialLocation: PAGESNAMES.home.ScreenPath,
     observers: [ChuckerFlutter.navigatorObserver],
     routes: [
       // GoRoute(
@@ -58,6 +60,18 @@ class RouterNavigation {
         path: PAGESNAMES.mentalHealthResult.ScreenPath,
         name: PAGESNAMES.mentalHealthResult.ScreenName,
         builder: (context, state) => const MentalHealthResultPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.about.ScreenPath,
+        name: PAGESNAMES.about.ScreenName,
+        builder: (context, state) => const AboutPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.support.ScreenPath,
+        name: PAGESNAMES.support.ScreenName,
+        builder: (context, state) => const SupportPage(),
       ),
 
       // GoRoute(

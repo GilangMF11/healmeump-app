@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:healmeumpapp/global/constant/colors_pick.dart';
 import 'package:healmeumpapp/global/constant/size.dart';
+import 'package:healmeumpapp/global/widget/logout_dialog.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
 import 'package:healmeumpapp/router/router_navigation.dart';
 import 'package:sizer/sizer.dart';
@@ -78,7 +79,37 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                           Spacer(),
-                          Image.asset('assets/icon-logout.png')
+                          GestureDetector(
+                            onTap: () async {
+                              await context.showLogoutDialog(
+                                onLogout: () {
+                                  // Handle logout logic here
+                                  // Clear user data, tokens, etc.
+                                  print('User logged out');
+                                  
+                                  // Navigate to login page
+                                  RouterNavigation.router.push(PAGESNAMES.login.ScreenPath);
+                                },
+                                onCancel: () {
+                                  // Handle cancel logic if needed
+                                  print('User cancelled logout');
+                                },
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(2.w),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Image.asset(
+                                'assets/icon-logout.png',
+                                width: 6.w,
+                                height: 3.h,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
                         ],
                       ),
                       SizedBox(height: 2.h),
@@ -196,7 +227,8 @@ class _HomePageState extends State<HomePage> {
                                       ))
                                 ],
                               ),
-                              Text("pengalaman Anda dalam 1 minggu terakhir untuk hasil yang akurat",
+                              Text(
+                                  "pengalaman Anda dalam 1 minggu terakhir untuk hasil yang akurat",
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.white,
@@ -231,11 +263,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 5.w,
-                      right: 2.w,
-                      top: 2.h
-                    ),
+                    padding: EdgeInsets.only(left: 5.w, right: 2.w, top: 2.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -248,7 +276,8 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(height: 3.h),
                         GestureDetector(
                           onTap: () {
-                            RouterNavigation.router.push(PAGESNAMES.mentalHealth.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.mentalHealth.ScreenPath);
                           },
                           child: Row(
                             children: [
@@ -259,7 +288,8 @@ class _HomePageState extends State<HomePage> {
                                   color: cBackground2,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Image.asset('assets/icon-brain-dashboard.png'),
+                                child: Image.asset(
+                                    'assets/icon-brain-dashboard.png'),
                               ),
                               SizedBox(width: 3.w),
                               SizedBox(
@@ -270,18 +300,34 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 1.h,
                                   children: [
-                                    Text("Tes Kesehatan Mental", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: cPrimaryText),),
-                                    Text("Tes kesehatan mental komprehensif", style: TextStyle(fontSize: 12.sp, color: cPrimaryText),),
+                                    Text(
+                                      "Tes Kesehatan Mental",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: cPrimaryText),
+                                    ),
+                                    Text(
+                                      "Tes kesehatan mental komprehensif",
+                                      style: TextStyle(
+                                          fontSize: 12.sp, color: cPrimaryText),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.black,)
-                          ],),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14.sp,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(height: 3.h),
                         GestureDetector(
                           onTap: () {
-                            RouterNavigation.router.push(PAGESNAMES.mentalHealth.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.mentalHealth.ScreenPath);
                           },
                           child: Row(
                             children: [
@@ -292,7 +338,8 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(0xFFFAEBEE),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Image.asset('assets/icon-favorite-dashboard.png'),
+                                child: Image.asset(
+                                    'assets/icon-favorite-dashboard.png'),
                               ),
                               SizedBox(width: 3.w),
                               SizedBox(
@@ -303,18 +350,34 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 1.h,
                                   children: [
-                                    Text("Tes Depresi", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: cPrimaryText),),
-                                    Text("Evaluasi tingkat depresi Anda", style: TextStyle(fontSize: 12.sp, color: cPrimaryText),),
+                                    Text(
+                                      "Tes Depresi",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: cPrimaryText),
+                                    ),
+                                    Text(
+                                      "Evaluasi tingkat depresi Anda",
+                                      style: TextStyle(
+                                          fontSize: 12.sp, color: cPrimaryText),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.black,)
-                          ],),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14.sp,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(height: 3.h),
                         GestureDetector(
                           onTap: () {
-                            RouterNavigation.router.push(PAGESNAMES.mentalHealth.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.mentalHealth.ScreenPath);
                           },
                           child: Row(
                             children: [
@@ -325,7 +388,8 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(0xFFFDF2DB),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Image.asset('assets/icon-flash-on-dashboard.png'),
+                                child: Image.asset(
+                                    'assets/icon-flash-on-dashboard.png'),
                               ),
                               SizedBox(width: 3.w),
                               SizedBox(
@@ -336,18 +400,34 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 1.h,
                                   children: [
-                                    Text("Tes Kecemasan", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: cPrimaryText),),
-                                    Text("Ukur tingkat kecemasan Anda", style: TextStyle(fontSize: 12.sp, color: cPrimaryText),),
+                                    Text(
+                                      "Tes Kecemasan",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: cPrimaryText),
+                                    ),
+                                    Text(
+                                      "Ukur tingkat kecemasan Anda",
+                                      style: TextStyle(
+                                          fontSize: 12.sp, color: cPrimaryText),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.black,)
-                          ],),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14.sp,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(height: 3.h),
                         GestureDetector(
                           onTap: () {
-                            RouterNavigation.router.push(PAGESNAMES.mentalHealth.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.mentalHealth.ScreenPath);
                           },
                           child: Row(
                             children: [
@@ -358,7 +438,8 @@ class _HomePageState extends State<HomePage> {
                                   color: Color(0xFFEEE9FE),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Image.asset('assets/icon-pulse-dashboard.png'),
+                                child: Image.asset(
+                                    'assets/icon-pulse-dashboard.png'),
                               ),
                               SizedBox(width: 3.w),
                               SizedBox(
@@ -369,17 +450,352 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   spacing: 1.h,
                                   children: [
-                                    Text("Tes Stres", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: cPrimaryText),),
-                                    Text("Evaluasi Tingkat stres harian", style: TextStyle(fontSize: 12.sp, color: cPrimaryText),),
+                                    Text(
+                                      "Tes Stres",
+                                      style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: cPrimaryText),
+                                    ),
+                                    Text(
+                                      "Evaluasi Tingkat stres harian",
+                                      style: TextStyle(
+                                          fontSize: 12.sp, color: cPrimaryText),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Icon(Icons.arrow_forward_ios, size: 14.sp, color: Colors.black,)
-                          ],),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14.sp,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
                         ),
                         SizedBox(height: 3.h),
                       ],
-                    ),),
+                    ),
+                  ),
+                ),
+              ),
+              // Riwayat Tes Card
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5.w,
+                  right: 5.w,
+                  top: 3.h,
+                ),
+                child: Container(
+                  width: sWidthFull(context),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(4.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Riwayat Tes',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: cPrimaryText,
+                              ),
+                            ),
+                            Text(
+                              'Lihat Semua',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: cPrimary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 2.h),
+                        
+                        // Test History Items
+                        Column(
+                          children: [
+                            // Recent Test 1
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+                              decoration: BoxDecoration(
+                                color: cBackground,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 12.w,
+                                    height: 6.h,
+                                    decoration: BoxDecoration(
+                                      color: cPrimary.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.psychology,
+                                      color: cPrimary,
+                                      size: 20.sp,
+                                    ),
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Tes Kesehatan Mental',
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: cPrimaryText,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Text(
+                                          'Skor: 25 (Normal)',
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.green[600],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Text(
+                                          '2 hari yang lalu',
+                                          style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Colors.grey[400],
+                                    size: 16.sp,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            
+                            SizedBox(height: 1.5.h),
+                            
+                            // Recent Test 2
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+                              decoration: BoxDecoration(
+                                color: cBackground,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 12.w,
+                                    height: 6.h,
+                                    decoration: BoxDecoration(
+                                      color: Colors.orange.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(
+                                      Icons.favorite,
+                                      color: Colors.orange[600],
+                                      size: 20.sp,
+                                    ),
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Tes Depresi',
+                                          style: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: cPrimaryText,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Text(
+                                          'Skor: 18 (Berisiko)',
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.orange[600],
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        SizedBox(height: 0.5.h),
+                                        Text(
+                                          '1 minggu yang lalu',
+                                          style: TextStyle(
+                                            fontSize: 11.sp,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Colors.grey[400],
+                                    size: 16.sp,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Informasi Card
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 5.w,
+                  right: 5.w,
+                  top: 3.h,
+                ),
+                child: Container(
+                  width: sWidthFull(context),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(4.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Text(
+                          'Informasi',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: cPrimaryText,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+
+                        // Tentang Aplikasi
+                        GestureDetector(
+                          onTap: () {
+                            // Navigate to about app page
+                            RouterNavigation.router.push(PAGESNAMES.about.ScreenPath);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 2.h),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(2.w),
+                                  decoration: BoxDecoration(
+                                    color: cPrimary.withValues(alpha: 0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.info,
+                                    color: cPrimary,
+                                    size: 18.sp,
+                                  ),
+                                ),
+                                SizedBox(width: 3.w),
+                                Expanded(
+                                  child: Text(
+                                    'Tentang Aplikasi',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: cPrimaryText,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey[400],
+                                  size: 16.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Divider
+                        Container(
+                          height: 1,
+                          color: Colors.grey[200],
+                        ),
+
+                        // Kontak
+                        GestureDetector(
+                          onTap: () {
+                            RouterNavigation.router.push(PAGESNAMES.support.ScreenPath);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: 2.h),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(2.w),
+                                  decoration: BoxDecoration(
+                                    color: cPrimary.withValues(alpha: 0.1),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.phone,
+                                    color: cPrimary,
+                                    size: 18.sp,
+                                  ),
+                                ),
+                                SizedBox(width: 3.w),
+                                Expanded(
+                                  child: Text(
+                                    'Kontak',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: cPrimaryText,
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.grey[400],
+                                  size: 16.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 3.h),

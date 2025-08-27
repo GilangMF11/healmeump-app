@@ -1,5 +1,5 @@
 
 class Version {
-  static String get version => '1.1.34';
-  static String get build => '40';
+  static String get version => '1.0.0';
+  static String get build => '1';
 }
