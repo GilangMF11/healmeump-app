@@ -2,6 +2,10 @@ import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:healmeumpapp/features/auth/presentation/pages/login_page.dart';
+import 'package:healmeumpapp/features/home/presentation/home_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/mental_health_counting_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/mental_health_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/mental_health_result_page.dart';
 import 'package:healmeumpapp/features/onbroading/presentation/onbroading_page.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
 
@@ -30,6 +34,30 @@ class RouterNavigation {
         path: PAGESNAMES.login.ScreenPath,
         name: PAGESNAMES.login.ScreenName,
         builder: (context, state) => const LoginPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.home.ScreenPath,
+        name: PAGESNAMES.home.ScreenName,
+        builder: (context, state) => const HomePage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.mentalHealth.ScreenPath,
+        name: PAGESNAMES.mentalHealth.ScreenName,
+        builder: (context, state) => const MentalHealthPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.mentalHealthCounting.ScreenPath,
+        name: PAGESNAMES.mentalHealthCounting.ScreenName,
+        builder: (context, state) => const MentalHealthCountingPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.mentalHealthResult.ScreenPath,
+        name: PAGESNAMES.mentalHealthResult.ScreenName,
+        builder: (context, state) => const MentalHealthResultPage(),
       ),
 
       // GoRoute(

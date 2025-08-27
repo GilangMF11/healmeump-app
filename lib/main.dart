@@ -70,9 +70,9 @@ class TemplateMain extends StatelessWidget {
           selectionColor: cPrimary,
           selectionHandleColor: Colors.black,
         ),
-        // appBarTheme: const AppBarTheme(
-        //     // color: c,
-        //     ),
+        appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.white),
+            ),
         textTheme: GoogleFonts.interTextTheme(textTheme).copyWith(),
       ),
       routerDelegate: RouterNavigation.router.routerDelegate,

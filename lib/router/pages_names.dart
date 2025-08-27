@@ -3,7 +3,14 @@ enum PAGESNAMES {
   home,
   login,
   onbroading,
-  
+  mentalHealth,
+  mentalHealthCounting,
+  mentalHealthResult,
+  depression,
+  anxiety,
+  stress,
+  tips,
+  tipDetails
 
 }
 
@@ -18,7 +25,22 @@ extension AppPageExtension on PAGESNAMES {
         return '/home';
       case PAGESNAMES.onbroading:
         return '/onbroading';
-      
+      case PAGESNAMES.mentalHealth:
+        return '/mentalHealth';
+      case PAGESNAMES.mentalHealthCounting:
+        return '/mentalHealthCounting';
+      case PAGESNAMES.mentalHealthResult:
+        return '/mentalHealthResult';
+      case PAGESNAMES.depression:
+        return '/depression';
+      case PAGESNAMES.anxiety:
+        return '/anxiety';
+      case PAGESNAMES.stress:
+        return '/stress';
+      case PAGESNAMES.tips:
+        return '/tips';
+      case PAGESNAMES.tipDetails:
+        return '/tipDetails';
       }
   }
 
@@ -32,6 +54,22 @@ extension AppPageExtension on PAGESNAMES {
         return 'home';
       case PAGESNAMES.onbroading:
         return 'onbroading';
+      case PAGESNAMES.mentalHealth:
+        return 'mentalHealth';
+      case PAGESNAMES.mentalHealthCounting:
+        return 'mentalHealthCounting';
+      case PAGESNAMES.mentalHealthResult:
+        return 'mentalHealthResult';
+      case PAGESNAMES.depression:
+        return 'depression';
+      case PAGESNAMES.anxiety:
+        return 'anxiety';
+      case PAGESNAMES.stress:
+        return 'stress';
+      case PAGESNAMES.tips:
+        return 'tips';
+      case PAGESNAMES.tipDetails:
+        return 'tipDetails';
     }
   }
 }

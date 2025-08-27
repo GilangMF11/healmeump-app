@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:healmeumpapp/global/constant/colors_pick.dart';
 import 'package:healmeumpapp/global/constant/size.dart';
+import 'package:healmeumpapp/router/pages_names.dart';
+import 'package:healmeumpapp/router/router_navigation.dart';
 import 'package:sizer/sizer.dart';
 
 class LoginPage extends StatefulWidget {
@@ -223,20 +225,25 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     SizedBox(height: 1.h),
-                    Container(
-                      width: sWidthFull(context),
-                      height: 5.h,
-                      decoration: BoxDecoration(
-                        color: cPrimary,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Masuk",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        RouterNavigation.router.push(PAGESNAMES.home.ScreenPath);
+                      },
+                      child: Container(
+                        width: sWidthFull(context),
+                        height: 5.h,
+                        decoration: BoxDecoration(
+                          color: cPrimary,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Masuk",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
