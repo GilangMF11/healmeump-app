@@ -26,6 +26,26 @@ class LocalDataSource {
     prefs.setString(ConstSharePreferences.email, email ?? "");
   }
 
+  Future<void> savePassword(String? password) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(ConstSharePreferences.password, password ?? "");
+  }
+
+  Future<void> saveType(String? type) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(ConstSharePreferences.type, type ?? "");
+  }
+
+  Future<void> saveStudyProgram(String? studyProgram) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(ConstSharePreferences.studyProgram, studyProgram ?? "");
+  }
+
+  Future<void> saveFaculty(String? faculty) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(ConstSharePreferences.faculty, faculty ?? "");
+  }
+
   Future<void> saveUsername(String? username) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(ConstSharePreferences.username, username ?? "");
@@ -81,23 +101,6 @@ class LocalDataSource {
     prefs.setString(ConstSharePreferences.roleUser, roleUser ?? "");
   }
 
-  // Future<void> saveProfile(AuthModel dataProfile) async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setString(
-  //       ConstSharePreferences.key, jsonEncode(dataProfile.toJson()));
-  // }
-
-  // Future<Map<String, dynamic>> getProfile() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? keyProfile = prefs.getString(ConstSharePreferences.key);
-  //   if (keyProfile == null) {
-  //     Map<String, dynamic> a = {};
-  //     return a;
-  //   } else {
-  //     final dataProfileDecode = await jsonDecode(keyProfile);
-  //     return dataProfileDecode;
-  //   }
-  // }
 
   Future<String> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -121,6 +124,30 @@ class LocalDataSource {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? username = prefs.getString(ConstSharePreferences.username);
     return username ?? "";
+  }
+
+  Future<String> getPassword() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? password = prefs.getString(ConstSharePreferences.password);
+    return password ?? "";
+  }
+
+  Future<String> getType() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? type = prefs.getString(ConstSharePreferences.type);
+    return type ?? "";
+  }
+
+  Future<String> getStudyProgram() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? studyProgram = prefs.getString(ConstSharePreferences.studyProgram);
+    return studyProgram ?? "";
+  }
+
+  Future<String> getFaculty() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? faculty = prefs.getString(ConstSharePreferences.faculty);
+    return faculty ?? "";
   }
 
   Future<String> getPhoneNumber() async {
@@ -216,6 +243,10 @@ class ConstSharePreferences {
   static String roleUser = 'roleUser';
   static String name = 'name';
   static String username = 'username';
+  static String password = 'password';
+  static String type = 'type';
+  static String studyProgram = 'studyProgram';
+  static String faculty = 'faculty';
   static String email = 'email';
   static String phoneNumber = 'phoneNumber';
   static String gender = 'gender';

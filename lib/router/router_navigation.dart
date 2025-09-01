@@ -17,7 +17,7 @@ class RouterNavigation {
   static final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
-    initialLocation: PAGESNAMES.home.ScreenPath,
+    initialLocation: PAGESNAMES.onbroading.ScreenPath,
     observers: [ChuckerFlutter.navigatorObserver],
     routes: [
       // GoRoute(

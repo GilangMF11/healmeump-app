@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:healmeumpapp/core/service/dio_factory_ump.dart';
 import 'package:healmeumpapp/features/auth/data/model/token_model.dart';
 
-class ServiceApiDioRamadhan {
+class ServiceApiDioUmp {
   String? _currentToken;
 
   /// Fungsi untuk merefresh token menggunakan username dan password

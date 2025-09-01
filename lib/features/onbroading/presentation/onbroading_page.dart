@@ -149,7 +149,7 @@ class _OnbroadingPageState extends State<OnbroadingPage> {
           
           // Bottom section with buttons only
           Padding(
-            padding: EdgeInsets.only(bottom: 4.h, left: 5.w, right: 5.w),
+            padding: EdgeInsets.only(bottom: 5.h, left: 5.w, right: 5.w),
             child: Column(
               children: [
                 // Buttons
