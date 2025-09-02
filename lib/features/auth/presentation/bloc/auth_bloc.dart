@@ -9,10 +9,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this.loginUsecase,
   }) : super(const AuthState()) {
-    on<AuthLoginEvent>((_AuthLogin));
+    on<AuthLoginEvent>((_authLogin));
   }
 
-  Future<void> _AuthLogin(
+  Future<void> _authLogin(
     AuthLoginEvent event, 
     Emitter<AuthState> emit
     ) async {

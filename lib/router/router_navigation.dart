@@ -9,6 +9,7 @@ import 'package:healmeumpapp/features/mental_health/presentation/mental_health_c
 import 'package:healmeumpapp/features/mental_health/presentation/mental_health_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/mental_health_result_page.dart';
 import 'package:healmeumpapp/features/onbroading/presentation/onbroading_page.dart';
+import 'package:healmeumpapp/features/splahscreen/splashScreen_page.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
 
 class RouterNavigation {
@@ -17,14 +18,14 @@ class RouterNavigation {
   static final GoRouter _router = GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: _rootNavigatorKey,
-    initialLocation: PAGESNAMES.onbroading.ScreenPath,
+    initialLocation: PAGESNAMES.splashScreen.ScreenPath,
     observers: [ChuckerFlutter.navigatorObserver],
     routes: [
-      // GoRoute(
-      //   path: PAGESNAMES.splashScreen.ScreenPath,
-      //   name: PAGESNAMES.splashScreen.ScreenName,
-      //   builder: (context, state) => const SplashscreenPage(),
-      // ),
+      GoRoute(
+        path: PAGESNAMES.splashScreen.ScreenPath,
+        name: PAGESNAMES.splashScreen.ScreenName,
+        builder: (context, state) => const SplashscreenPage(),
+      ),
 
       GoRoute(
         path: PAGESNAMES.onbroading.ScreenPath,

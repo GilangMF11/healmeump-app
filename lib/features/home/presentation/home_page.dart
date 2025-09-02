@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:healmeumpapp/global/constant/colors_pick.dart';
 import 'package:healmeumpapp/global/constant/size.dart';
 import 'package:healmeumpapp/global/widget/logout_dialog.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
 import 'package:healmeumpapp/router/router_navigation.dart';
+import 'package:healmeumpapp/shared/local_datasource.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +17,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Future<String> username;
+  late Future<String> faculty;
+  late Future<String> name;
+
+  @override
+  void initState() {
+    username = LocalDataSource().getUsername();
+    faculty = LocalDataSource().getFaculty();
+    name = LocalDataSource().getName();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,14 +76,24 @@ class _HomePageState extends State<HomePage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Halo, Gilang MF",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              FutureBuilder<String>(
+                                  future: name,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      return Text(
+                                          snapshot.data ?? 'Nama Pengguna',
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white));
+                                    } else {
+                                      return Text("Nama Pengguna",
+                                          style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white));
+                                    }
+                                  }),
                               Text(
                                 "Selamat datang kembali",
                                 style: TextStyle(
@@ -82,13 +107,13 @@ class _HomePageState extends State<HomePage> {
                           GestureDetector(
                             onTap: () async {
                               await context.showLogoutDialog(
-                                onLogout: () {
-                                  // Handle logout logic here
-                                  // Clear user data, tokens, etc.
-                                  print('User logged out');
+                                onLogout: () async {
+                                  SharedPreferences pref =
+                                      await SharedPreferences.getInstance();
+                                  await pref.clear();
+                                  context.go(PAGESNAMES.login.ScreenPath);
                                   
-                                  // Navigate to login page
-                                  RouterNavigation.router.push(PAGESNAMES.login.ScreenPath);
+                                  print('User logged out');
                                 },
                                 onCancel: () {
                                   // Handle cancel logic if needed
@@ -157,14 +182,19 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Spacer(),
-                                  Text(
-                                    "1234567890",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  )
+                                  FutureBuilder<String>(
+                                    future: username,
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? "1234567890",
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 1.h),
@@ -179,13 +209,18 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Spacer(),
-                                  Text(
-                                    "FAKULTAS ILMU KESEHATAN",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                  FutureBuilder<String>(
+                                    future: faculty,
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data ?? "FAKULTAS ILMU KESEHATAN",
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      );
+                                    },
                                   )
                                 ],
                               ),
@@ -527,13 +562,14 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         SizedBox(height: 2.h),
-                        
+
                         // Test History Items
                         Column(
                           children: [
                             // Recent Test 1
                             Container(
-                              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 2.h, horizontal: 3.w),
                               decoration: BoxDecoration(
                                 color: cBackground,
                                 borderRadius: BorderRadius.circular(10),
@@ -556,7 +592,8 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(width: 3.w),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Tes Kesehatan Mental',
@@ -594,12 +631,13 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               ),
                             ),
-                            
+
                             SizedBox(height: 1.5.h),
-                            
+
                             // Recent Test 2
                             Container(
-                              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 2.h, horizontal: 3.w),
                               decoration: BoxDecoration(
                                 color: cBackground,
                                 borderRadius: BorderRadius.circular(10),
@@ -610,7 +648,8 @@ class _HomePageState extends State<HomePage> {
                                     width: 12.w,
                                     height: 6.h,
                                     decoration: BoxDecoration(
-                                      color: Colors.orange.withValues(alpha: 0.1),
+                                      color:
+                                          Colors.orange.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(
@@ -622,7 +661,8 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(width: 3.w),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           'Tes Depresi',
@@ -707,7 +747,8 @@ class _HomePageState extends State<HomePage> {
                         GestureDetector(
                           onTap: () {
                             // Navigate to about app page
-                            RouterNavigation.router.push(PAGESNAMES.about.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.about.ScreenPath);
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 2.h),
@@ -755,7 +796,8 @@ class _HomePageState extends State<HomePage> {
                         // Kontak
                         GestureDetector(
                           onTap: () {
-                            RouterNavigation.router.push(PAGESNAMES.support.ScreenPath);
+                            RouterNavigation.router
+                                .push(PAGESNAMES.support.ScreenPath);
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 2.h),
