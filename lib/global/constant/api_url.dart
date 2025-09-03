@@ -8,10 +8,8 @@ class ApiUrl {
   static String questionnaires = 'v1/api/questionnaires';
   static String responses = 'v1/api/responses';
   static String scores = 'v1/api/scores';
-  static String categories = 'v1/api/tips/categories';
   static String tips = 'v1/api/tips';
+  static String categories = 'v1/api/tips/categories';
   static String tipsProgram = 'v1/api/tips/programs';
 
-
-  
 }
