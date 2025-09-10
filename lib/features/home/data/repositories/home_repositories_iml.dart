@@ -28,6 +28,4 @@ class HomeRepositoriesImp extends HomeRepository {
       return Left(DataSourceErrorConstant.NO_INTERNET_CONNECTION.getFailureResponse());
     }
   }
-
-  
 }
