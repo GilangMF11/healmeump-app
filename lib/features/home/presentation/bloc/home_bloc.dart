@@ -20,13 +20,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final result = await versionUsecase.call();
     result.fold((failure) {
-
+      print("gagal");
       emit(state.copyWith(
         loadingVersion: ResponseValidation.LOADED,
         statusVersion: ResponseValidation.FAIL,
         messageVersion: failure.message
       ));
     }, (success) {
+      print("berhasil");
+      //print("Version Data: ${success.success.toString()}");
       emit(state.copyWith(
         loadingVersion: ResponseValidation.LOADED,
         statusVersion: ResponseValidation.SUCCESS,

@@ -12,10 +12,11 @@ class HomeImpRemoteDataSource implements HomeRemoteDataSource {
   @override
   Future<VersionModel> getVersion() async {
     try {
-      final response = await dio.getCall(ApiUrl.version);
+      final response = await dio.getCall("${ApiUrl.version}/latest?platform=android");
       VersionModel result = VersionModel.fromJson(response.data);
       return result;
     } catch (e) {
+      print("error: $e");
       rethrow;
     }
   }
