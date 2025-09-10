@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state.loadingLogin == ResponseValidation.LOADED) {
@@ -34,7 +35,9 @@ class _LoginPageState extends State<LoginPage> {
               print("Message: ${state.messageLogin}");
               context.go(PAGESNAMES.home.ScreenPath);
               LocalDataSource().saveLogIn(true);
-              LocalDataSource().saveType("1");
+              // Perbaiki logika role berdasarkan tipe user
+              LocalDataSource().saveType(_isMahasiswa ? "1" : "2");
+              //LocalDataSource().saveRoleUser(_isMahasiswa ? "mahasiswa" : "dosen");
             } else {
               print("Message: ${state.messageLogin}");
               ScaffoldMessenger.of(context).showSnackBar(
@@ -46,15 +49,24 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         builder: (context, state) {
-          return Padding(
-            padding: EdgeInsets.only(
-              left: 5.w,
-              right: 5.w,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 5.w,
+                right: 5.w,
+                top: MediaQuery.of(context).padding.top + 2.h,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 2.h,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 
+                             MediaQuery.of(context).padding.top - 
+                             MediaQuery.of(context).padding.bottom,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                 Container(
                   width: sWidthFull(context),
                   height: 60.h,
@@ -341,9 +353,11 @@ class _LoginPageState extends State<LoginPage> {
                 )
               ],
             ),
-          );
-        },
-      ),
-    );
-  }
+          ),
+        ),
+      );
+    },
+  ),
+);
+}
 }

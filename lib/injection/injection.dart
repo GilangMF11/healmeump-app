@@ -4,6 +4,11 @@ import 'package:healmeumpapp/features/auth/data/repositories/auth_repositories_i
 import 'package:healmeumpapp/features/auth/domain/repository/auth_repository.dart';
 import 'package:healmeumpapp/features/auth/domain/usecase/login_usecase.dart';
 import 'package:healmeumpapp/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:healmeumpapp/features/home/data/datasource/remote_datasource_home.dart';
+import 'package:healmeumpapp/features/home/data/repositories/home_repositories_iml.dart';
+import 'package:healmeumpapp/features/home/domain/repository/home_repository.dart';
+import 'package:healmeumpapp/features/home/domain/usecase/version_usecase.dart';
+import 'package:healmeumpapp/features/home/presentation/bloc/home_bloc.dart';
 import 'package:healmeumpapp/shared/local_datasource.dart';
 
 final sl = GetIt.instance;
@@ -14,6 +19,9 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthImpRemoteDataSource()
   );
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+    () => HomeImpRemoteDataSource()
+  );
   // sl.registerLazySingleton<AuthRemoteDataSource>(
   //     () => AuthImpRemoteDataSource());
   
@@ -21,6 +29,9 @@ Future<void> init() async {
   // REPOSITORY
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp(
       authRemoteDataSource: sl(),
+    ));
+  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoriesImp(
+      homeRemoteDataSource: sl(),
     ));
   // sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp(
   //     authRemoteDataSource: sl(),
@@ -30,12 +41,14 @@ Future<void> init() async {
 
   // USECASE
   sl.registerLazySingleton(() => LoginUsecase(sl()));
+  sl.registerLazySingleton(() => VersionUsecase(sl()));
   //sl.registerLazySingleton(() => LoginUsecase(sl()));
   
 
 
   // BLOC
   sl.registerFactory(() => AuthBloc(loginUsecase: sl()));
+  sl.registerFactory(() => HomeBloc(versionUsecase: sl()));
   // sl.registerFactory(() => AuthBloc(
   //   loginUsecase: sl(),
   //   versionUsecase: sl(),

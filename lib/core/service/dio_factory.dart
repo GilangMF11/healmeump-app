@@ -28,11 +28,9 @@ class DioFactory {
     final headers = {
       'content-type': DioOptions.APPLICATION_JSON,
       'accept': DioOptions.APPLICATION_JSON,
-      'User-Agent' : 'neoPresensiAndroid',
-      'x-Authorization': token ?? '',
-      //'x-Authorization': 'eyJpdiI6IjVmd1NmVHlITm8xUEdKNXNRTDRqS1E9PSIsInZhbHVlIjoiMzRuQlhVN1NFdGNnaEYxQlZYdFYvMHJLZjdFdGxQODBoUk1ZVTFucmVzUFhjUHgwc3hqTjF6dWFKSVFrNEtvL21Lb3pmZXZyc3RSVTJyYmY5cDJZN0hWWXNHWkdYTi8zVVdDWkJ3cE94Mk0zMnlvNC9TelpxNDJNNDVnVm9XOFNMbzZOUnBlcldsV29jejNJS2ZmNlFBPT0iLCJtYWMiOiIwODVkODM1Mzc3MjYwZTMyYjZhNTQ2YjBkNGFkNDc5NzBmZDkzM2FkNDZhMWMwMzg0MjA0ZTkzMzhmNzRjYzdiIiwidGFnIjoiIn0=',
+      'User-Agent' : 'HealmeUMP2025',
+      'Authorization': 'UMPMENDUNIA',
       'X-Requested-With': 'XMLHttpRequest',
-      //'version' : "0",
       'version' : Version.version + "+" + Version.build,
     };
 

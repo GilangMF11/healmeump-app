@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healmeumpapp/features/home/presentation/bloc/home_bloc.dart';
 import 'package:healmeumpapp/global/constant/colors_pick.dart';
 import 'package:healmeumpapp/injection/injection.dart' as di;
 import 'package:healmeumpapp/core/service/flavor_config_set.dart';
@@ -35,7 +36,10 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) => di.sl<AuthBloc>(),
-          )
+          ),
+          BlocProvider(
+            create: (context) => di.sl<HomeBloc>(),
+          ),
         ],
         child: Sizer(builder: (context, orientation, deviceType) {
           return const TemplateMain();

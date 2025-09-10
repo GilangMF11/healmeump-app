@@ -20,11 +20,15 @@ class _HomePageState extends State<HomePage> {
   late Future<String> username;
   late Future<String> faculty;
   late Future<String> name;
+  late Future<String> studyProgram;
+  late Future<String> type;
 
   @override
   void initState() {
+    type = LocalDataSource().getType();
     username = LocalDataSource().getUsername();
     faculty = LocalDataSource().getFaculty();
+    studyProgram = LocalDataSource().getStudyProgram();
     name = LocalDataSource().getName();
     super.initState();
   }
@@ -200,26 +204,54 @@ class _HomePageState extends State<HomePage> {
                               SizedBox(height: 1.h),
                               Row(
                                 children: [
-                                  Text(
-                                    "Fakultas",
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Spacer(),
                                   FutureBuilder<String>(
-                                    future: faculty,
-                                    builder: (context, snapshot) {
+                                    future: type,
+                                    builder: (context, typeSnapshot) {
                                       return Text(
-                                        snapshot.data ?? "FAKULTAS ILMU KESEHATAN",
+                                        typeSnapshot.data == "1" ? "Jurusan" : "Fakultas",
                                         style: TextStyle(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
                                       );
+                                    },
+                                  ),
+                                  Spacer(),
+                                  FutureBuilder<String>(
+                                    future: type,
+                                    builder: (context, typeSnapshot) {
+                                      if (typeSnapshot.data == "1") {
+                                        // Mahasiswa - tampilkan studyProgram
+                                        return FutureBuilder<String>(
+                                          future: studyProgram,
+                                          builder: (context, snapshot) {
+                                            return Text(
+                                              snapshot.data ?? "PROGRAM STUDI",
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        // Dosen - tampilkan faculty
+                                        return FutureBuilder<String>(
+                                          future: faculty,
+                                          builder: (context, snapshot) {
+                                            return Text(
+                                              snapshot.data ?? "FAKULTAS ILMU KESEHATAN",
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }
                                     },
                                   )
                                 ],
