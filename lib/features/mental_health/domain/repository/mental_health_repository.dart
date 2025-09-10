@@ -19,4 +19,5 @@ abstract class MentalHealthRepository {
   Future<Either<FailureResponse, SaveAnswersEntities>> saveAnswers(
     List<Map<String, dynamic>> answers, String responseId,
   );
+  //Future<Either<FailureResponse, List<MentalHealthEntities>>> getMentalHealth();
 }

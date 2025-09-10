@@ -12,7 +12,9 @@ import 'package:healmeumpapp/features/home/presentation/bloc/home_bloc.dart';
 import 'package:healmeumpapp/features/mental_health/data/datasource/remote_datasource_mental_health.dart';
 import 'package:healmeumpapp/features/mental_health/data/repositories/mental_health_repositories.dart';
 import 'package:healmeumpapp/features/mental_health/domain/repository/mental_health_repository.dart';
+import 'package:healmeumpapp/features/mental_health/domain/usecase/create_answers_usecase.dart';
 import 'package:healmeumpapp/features/mental_health/domain/usecase/mental_health_usecase.dart';
+import 'package:healmeumpapp/features/mental_health/domain/usecase/save_answers_usecase.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/bloc/mentalhealth_bloc.dart';
 import 'package:healmeumpapp/shared/local_datasource.dart';
 
@@ -22,49 +24,36 @@ Future<void> init() async {
   // DATASOURCE
   sl.registerLazySingleton<LocalDataSource>(() => LocalDataSource());
   sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthImpRemoteDataSource()
-  );
+      () => AuthImpRemoteDataSource());
   sl.registerLazySingleton<HomeRemoteDataSource>(
-    () => HomeImpRemoteDataSource()
-  );
+      () => HomeImpRemoteDataSource());
   sl.registerLazySingleton<MentalHealthRemoteDataSource>(
-    () => MentalHealthImpRemoteDataSource()
-  );
-  // sl.registerLazySingleton<AuthRemoteDataSource>(
-  //     () => AuthImpRemoteDataSource());
-  
+      () => MentalHealthImpRemoteDataSource());
 
   // REPOSITORY
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp(
-      authRemoteDataSource: sl(),
-    ));
+        authRemoteDataSource: sl(),
+      ));
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoriesImp(
-      homeRemoteDataSource: sl(),
-    ));
-  sl.registerLazySingleton<MentalHealthRepository>(() => MentalHealthRepositoriesImp(
-      mentalHealthRemoteDataSource: sl(),
-    ));
-  // sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp(
-  //     authRemoteDataSource: sl(),
-  //   ));
-  
-
+        homeRemoteDataSource: sl(),
+      ));
+  sl.registerLazySingleton<MentalHealthRepository>(
+      () => MentalHealthRepositoriesImp(
+            mentalHealthRemoteDataSource: sl(),
+          ));
 
   // USECASE
   sl.registerLazySingleton(() => LoginUsecase(sl()));
   sl.registerLazySingleton(() => VersionUsecase(sl()));
   sl.registerLazySingleton(() => MentalHealthUsecase(sl()));
-  //sl.registerLazySingleton(() => LoginUsecase(sl()));
-  
-
+  sl.registerLazySingleton(() => CreateAnswersUsecase(sl()));
+  sl.registerLazySingleton(() => SaveAnswersUsecase(sl()));  //sl.registerLazySingleton(() => LoginUsecase(sl()));
 
   // BLOC
   sl.registerFactory(() => AuthBloc(loginUsecase: sl()));
   sl.registerFactory(() => HomeBloc(versionUsecase: sl()));
-  sl.registerFactory(() => MentalhealthBloc(mentalHealthUsecase: sl()));
-  // sl.registerFactory(() => AuthBloc(
-  //   loginUsecase: sl(),
-  //   versionUsecase: sl(),
-  //   ));
-
+  sl.registerFactory(() => MentalhealthBloc(
+      mentalHealthUsecase: sl(),
+      createAnswersUsecase: sl(),
+      saveAnswersUsecase: sl()));
 }
