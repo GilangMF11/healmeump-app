@@ -9,6 +9,11 @@ import 'package:healmeumpapp/features/home/data/repositories/home_repositories_i
 import 'package:healmeumpapp/features/home/domain/repository/home_repository.dart';
 import 'package:healmeumpapp/features/home/domain/usecase/version_usecase.dart';
 import 'package:healmeumpapp/features/home/presentation/bloc/home_bloc.dart';
+import 'package:healmeumpapp/features/mental_health/data/datasource/remote_datasource_mental_health.dart';
+import 'package:healmeumpapp/features/mental_health/data/repositories/mental_health_repositories.dart';
+import 'package:healmeumpapp/features/mental_health/domain/repository/mental_health_repository.dart';
+import 'package:healmeumpapp/features/mental_health/domain/usecase/mental_health_usecase.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/bloc/mentalhealth_bloc.dart';
 import 'package:healmeumpapp/shared/local_datasource.dart';
 
 final sl = GetIt.instance;
@@ -22,6 +27,9 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeImpRemoteDataSource()
   );
+  sl.registerLazySingleton<MentalHealthRemoteDataSource>(
+    () => MentalHealthImpRemoteDataSource()
+  );
   // sl.registerLazySingleton<AuthRemoteDataSource>(
   //     () => AuthImpRemoteDataSource());
   
@@ -33,6 +41,9 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoriesImp(
       homeRemoteDataSource: sl(),
     ));
+  sl.registerLazySingleton<MentalHealthRepository>(() => MentalHealthRepositoriesImp(
+      mentalHealthRemoteDataSource: sl(),
+    ));
   // sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImp(
   //     authRemoteDataSource: sl(),
   //   ));
@@ -42,6 +53,7 @@ Future<void> init() async {
   // USECASE
   sl.registerLazySingleton(() => LoginUsecase(sl()));
   sl.registerLazySingleton(() => VersionUsecase(sl()));
+  sl.registerLazySingleton(() => MentalHealthUsecase(sl()));
   //sl.registerLazySingleton(() => LoginUsecase(sl()));
   
 
@@ -49,6 +61,7 @@ Future<void> init() async {
   // BLOC
   sl.registerFactory(() => AuthBloc(loginUsecase: sl()));
   sl.registerFactory(() => HomeBloc(versionUsecase: sl()));
+  sl.registerFactory(() => MentalhealthBloc(mentalHealthUsecase: sl()));
   // sl.registerFactory(() => AuthBloc(
   //   loginUsecase: sl(),
   //   versionUsecase: sl(),
