@@ -67,7 +67,7 @@ class DataCreateAnswers {
       );
 
   factory DataCreateAnswers.fromJson(Map<String, dynamic> json) => DataCreateAnswers(
-        responseId: json["responseId"] ?? "",
+        responseId: json["response_id"] ?? "",
         questionnaireCode: json["questionnaireCode"] ?? "",
         status: json["status"] ?? "",
         createdAt: json["createdAt"] != null 

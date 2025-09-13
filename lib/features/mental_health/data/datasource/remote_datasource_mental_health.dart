@@ -4,12 +4,14 @@ import 'package:healmeumpapp/features/mental_health/data/model/create_answers_re
 import 'package:healmeumpapp/features/mental_health/data/model/mental_health_model.dart';
 import 'package:healmeumpapp/features/mental_health/data/model/save_answers_model.dart';
 import 'package:healmeumpapp/features/mental_health/data/model/save_answers_request_model.dart';
+import 'package:healmeumpapp/features/mental_health/data/model/submit_answers_model.dart';
 import 'package:healmeumpapp/global/constant/api_url.dart';
 
 abstract class MentalHealthRemoteDataSource {
   Future<MentalHealthModel> getQuestionnairebyCodeName(String codeName);
   Future<CreateAnswersModel> createAnswers(CreateAnswersRequestModel request);
   Future<SaveAnswersModel> saveAnswers(SaveAnswersRequestModel request, String responseId);
+  Future<SubmitAnswersModel> submitAnswers(String responseId);
 }
 
 class MentalHealthImpRemoteDataSource implements MentalHealthRemoteDataSource {
@@ -46,13 +48,28 @@ class MentalHealthImpRemoteDataSource implements MentalHealthRemoteDataSource {
   Future<SaveAnswersModel> saveAnswers(SaveAnswersRequestModel request, String responseId) async {
     try {
       final response = await dio.putCall(
-        "${ApiUrl.questionnaires}/$responseId/answers",
+        "${ApiUrl.responses}/$responseId/answers",
         request.toJson(),
       );
       SaveAnswersModel result = SaveAnswersModel.fromJson(response.data);
       return result;
     } catch (e) {
       print("error save answers: $e");
+      rethrow;
+    }
+  }
+  
+  @override
+  Future<SubmitAnswersModel> submitAnswers(String responseId) async {
+    try {
+      final response = await dio.postCall(
+        "${ApiUrl.responses}/$responseId/submit",
+        {},
+      );
+      SubmitAnswersModel result = SubmitAnswersModel.fromJson(response.data);
+      return result;
+    } catch (e) {
+      print("error submit answers: $e");
       rethrow;
     }
   }

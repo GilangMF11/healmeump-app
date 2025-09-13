@@ -10,6 +10,7 @@ import 'package:healmeumpapp/features/mental_health/data/model/save_answers_requ
 import 'package:healmeumpapp/features/mental_health/domain/entities/create_answers_entities.dart';
 import 'package:healmeumpapp/features/mental_health/domain/entities/mental_health_entities.dart';
 import 'package:healmeumpapp/features/mental_health/domain/entities/save_answers_entities.dart';
+import 'package:healmeumpapp/features/mental_health/domain/entities/submit_answers_entities.dart';
 import 'package:healmeumpapp/features/mental_health/domain/repository/mental_health_repository.dart';
 
 class MentalHealthRepositoriesImp extends MentalHealthRepository {
@@ -83,6 +84,20 @@ class MentalHealthRepositoriesImp extends MentalHealthRepository {
         
         final request = SaveAnswersRequestModel(answers: answerList);
         final result = await mentalHealthRemoteDataSource.saveAnswers(request, responseId);
+        return Right(result.toEntity());
+      } catch (error) {
+        return Left(ErrorHandler.handle(error).failure);
+      }
+    } else {
+      return Left(DataSourceErrorConstant.NO_INTERNET_CONNECTION.getFailureResponse());
+    }
+  }
+
+  @override
+  Future<Either<FailureResponse, SubmitAnswersEntities>> submitAnswers(String responseId) async {
+    if (await checkConnection == true) {
+      try {
+        final result = await mentalHealthRemoteDataSource.submitAnswers(responseId);
         return Right(result.toEntity());
       } catch (error) {
         return Left(ErrorHandler.handle(error).failure);

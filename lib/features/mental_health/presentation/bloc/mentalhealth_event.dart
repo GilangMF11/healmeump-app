@@ -34,7 +34,8 @@ class CreateAnswersEvent extends MentalhealthEvent {
       required this.jenisPegawai,
       required this.prodi,
       required this.email,
-      required this.hp});
+      required this.hp,
+      });
 
   @override
   List<Object> get props => [
@@ -57,4 +58,13 @@ class SaveAnswersEvent extends MentalhealthEvent {
 
   @override
   List<Object> get props => [answers, responseId];
+}
+
+class SubmitAnswersEvent extends MentalhealthEvent {
+  final String responseId;
+
+  const SubmitAnswersEvent({required this.responseId});
+
+  @override
+  List<Object> get props => [responseId];
 }

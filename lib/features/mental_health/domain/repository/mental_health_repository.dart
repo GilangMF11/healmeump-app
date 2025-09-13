@@ -3,6 +3,7 @@ import 'package:healmeumpapp/core/handling_service_response/failure_response.dar
 import 'package:healmeumpapp/features/mental_health/domain/entities/create_answers_entities.dart';
 import 'package:healmeumpapp/features/mental_health/domain/entities/mental_health_entities.dart';
 import 'package:healmeumpapp/features/mental_health/domain/entities/save_answers_entities.dart';
+import 'package:healmeumpapp/features/mental_health/domain/entities/submit_answers_entities.dart';
 
 abstract class MentalHealthRepository {
   Future<Either<FailureResponse, MentalHealthEntities>> getQuestionnairebyCodeName(String codeName);
@@ -20,4 +21,7 @@ abstract class MentalHealthRepository {
     List<Map<String, dynamic>> answers, String responseId,
   );
   //Future<Either<FailureResponse, List<MentalHealthEntities>>> getMentalHealth();
+  Future<Either<FailureResponse, SubmitAnswersEntities>> submitAnswers(
+    String responseId,
+  );
 }

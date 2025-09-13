@@ -10,11 +10,9 @@ import 'package:healmeumpapp/features/home/domain/repository/home_repository.dar
 import 'package:healmeumpapp/features/home/domain/usecase/version_usecase.dart';
 import 'package:healmeumpapp/features/home/presentation/bloc/home_bloc.dart';
 import 'package:healmeumpapp/features/mental_health/data/datasource/remote_datasource_mental_health.dart';
-import 'package:healmeumpapp/features/mental_health/data/repositories/mental_health_repositories.dart';
+import 'package:healmeumpapp/features/mental_health/data/repositories/mental_health_repositories.dart'; 
 import 'package:healmeumpapp/features/mental_health/domain/repository/mental_health_repository.dart';
-import 'package:healmeumpapp/features/mental_health/domain/usecase/create_answers_usecase.dart';
 import 'package:healmeumpapp/features/mental_health/domain/usecase/mental_health_usecase.dart';
-import 'package:healmeumpapp/features/mental_health/domain/usecase/save_answers_usecase.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/bloc/mentalhealth_bloc.dart';
 import 'package:healmeumpapp/shared/local_datasource.dart';
 
@@ -46,14 +44,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUsecase(sl()));
   sl.registerLazySingleton(() => VersionUsecase(sl()));
   sl.registerLazySingleton(() => MentalHealthUsecase(sl()));
-  sl.registerLazySingleton(() => CreateAnswersUsecase(sl()));
-  sl.registerLazySingleton(() => SaveAnswersUsecase(sl()));  //sl.registerLazySingleton(() => LoginUsecase(sl()));
 
   // BLOC
   sl.registerFactory(() => AuthBloc(loginUsecase: sl()));
   sl.registerFactory(() => HomeBloc(versionUsecase: sl()));
   sl.registerFactory(() => MentalhealthBloc(
-      mentalHealthUsecase: sl(),
-      createAnswersUsecase: sl(),
-      saveAnswersUsecase: sl()));
+      mentalHealthUsecase: sl()));
 }
