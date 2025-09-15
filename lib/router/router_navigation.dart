@@ -48,7 +48,27 @@ class RouterNavigation {
       GoRoute(
         path: PAGESNAMES.mentalHealth.ScreenPath,
         name: PAGESNAMES.mentalHealth.ScreenName,
-        builder: (context, state) => const MentalHealthPage(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final questionnaireCode = extra['questionnaireCode'];
+          final userId = extra['userId'];
+          final namaPegawai = extra['namaPegawai'];
+          final nip = extra['nip'];
+          final jenisPegawai = extra['jenisPegawai'];
+          final prodi = extra['prodi'];
+          final email = extra['email'];
+          final hp = extra['hp'];
+          return MentalHealthPage(
+            questionnaireCode: questionnaireCode,
+            userId: userId,
+            namaPegawai: namaPegawai,
+            nip: nip,
+            jenisPegawai: jenisPegawai,
+            prodi: prodi,
+            email: email,
+            hp: hp,
+          );
+        },
       ),
 
       GoRoute(

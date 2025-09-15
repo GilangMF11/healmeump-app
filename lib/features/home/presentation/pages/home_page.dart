@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   late Future<String> name;
   late Future<String> studyProgram;
   late Future<String> type;
+  late Future<String> hp;
+  late Future<String> email;
 
   @override
   void initState() {
@@ -37,6 +39,8 @@ class _HomePageState extends State<HomePage> {
     faculty = LocalDataSource().getFaculty();
     studyProgram = LocalDataSource().getStudyProgram();
     name = LocalDataSource().getName();
+    hp = LocalDataSource().getPhoneNumber();
+    email = LocalDataSource().getEmail();
     super.initState();
     _bloc = context.read<HomeBloc>();
     _getVersion();
@@ -382,9 +386,20 @@ class _HomePageState extends State<HomePage> {
                                     )),
                                 SizedBox(height: 3.h),
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    final extra = {
+                                      'questionnaireCode': 'DASS21',
+                                      'userId': await username,
+                                      'namaPegawai': await name,
+                                      'nip': await username,
+                                      'jenisPegawai': await type == "1" ? "MAHASISWA" : "DOSEN",
+                                      'prodi': await studyProgram,
+                                      'email': await email,
+                                      'hp': await hp,
+                                    };
                                     RouterNavigation.router.push(
-                                        PAGESNAMES.mentalHealth.ScreenPath);
+                                        PAGESNAMES.mentalHealth.ScreenPath,
+                                        extra: extra);
                                   },
                                   child: Row(
                                     children: [

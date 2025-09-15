@@ -63,7 +63,7 @@ class MentalHealthImpRemoteDataSource implements MentalHealthRemoteDataSource {
   Future<SubmitAnswersModel> submitAnswers(String responseId) async {
     try {
       final response = await dio.postCall(
-        "${ApiUrl.responses}/$responseId/submit",
+        "${ApiUrl.responses}/$responseId/submit?compute=true",
         {},
       );
       SubmitAnswersModel result = SubmitAnswersModel.fromJson(response.data);

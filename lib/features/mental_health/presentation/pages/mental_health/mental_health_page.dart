@@ -13,7 +13,15 @@ import 'package:healmeumpapp/router/router_navigation.dart';
 import 'package:sizer/sizer.dart';
 
 class MentalHealthPage extends StatefulWidget {
-  const MentalHealthPage({super.key});
+  final String questionnaireCode;
+  final String userId;
+  final String namaPegawai;
+  final String nip;
+  final String jenisPegawai;
+  final String prodi;
+  final String email;
+  final String hp;
+  const MentalHealthPage({super.key, required this.questionnaireCode, required this.userId, required this.namaPegawai, required this.nip, required this.jenisPegawai, required this.prodi, required this.email, required this.hp});
 
   @override
   State<MentalHealthPage> createState() => _MentalHealthPageState();
@@ -24,13 +32,44 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
   int currentQuestionIndex = 0;
   List<Map<String, dynamic>> answers = [];
   String? responseId; // Untuk menyimpan response_id dari CreateAnswersEvent
+  bool _hasCreatedResponse = false; // Flag untuk mencegah create response berulang
+  bool _hasNavigatedToCounting = false; // Flag untuk mencegah navigasi berulang ke counting page
 
   @override
   void initState() {
     super.initState();
     mentalhealthBloc = context.read<MentalhealthBloc>();
+    
+    // Reset state jika ada data dari tes sebelumnya
+    _resetStateIfNeeded();
+    
     _getQuestionnairebyCodeName();
-    _createInitialResponse(); // Create response saat init
+    
+    // Create response hanya jika belum pernah dibuat
+    if (!_hasCreatedResponse) {
+      _createInitialResponse(); // Create response saat init
+    }
+  }
+
+  // Reset state jika ada data dari tes sebelumnya
+  void _resetStateIfNeeded() {
+    final currentState = mentalhealthBloc.state;
+    
+    // Jika ada data submit answers dari tes sebelumnya, reset state
+    if (currentState.statusSubmitAnswers == ResponseValidation.SUCCESS ||
+        currentState.statusSaveAnswers == ResponseValidation.SUCCESS) {
+      print('=== RESETTING STATE FROM PREVIOUS TEST ===');
+      
+      // Reset flags
+      _hasCreatedResponse = false;
+      _hasNavigatedToCounting = false;
+      currentQuestionIndex = 0;
+      answers.clear();
+      responseId = null;
+      
+      // Reset state di bloc (jika ada method reset)
+      // mentalhealthBloc.add(ResetMentalHealthStateEvent());
+    }
   }
 
   _getQuestionnairebyCodeName() async {
@@ -39,17 +78,20 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
 
   // Create response untuk mendapatkan response_id
   _createInitialResponse() async {
-    mentalhealthBloc.add(CreateAnswersEvent(
-      questionnaireCode: "DASS21",
-      // Data ini akan diambil dari local datasource di use case
-      userId: "1802010042", 
-      namaPegawai: "BAYU TRIO PAMUNGKAS",
-      nip: "1802010042",
-      jenisPegawai: "MAHASISWA",
-      prodi: "Manajemen S1",
-      email: "-",
-      hp: "085802722390",
-    ));
+    if (!_hasCreatedResponse) {
+      _hasCreatedResponse = true; // Set flag agar tidak create lagi
+      mentalhealthBloc.add(CreateAnswersEvent(
+        questionnaireCode: widget.questionnaireCode,
+        // Data ini akan diambil dari local datasource di use case
+        userId: widget.userId, 
+        namaPegawai: widget.namaPegawai,
+        nip: widget.nip,
+        jenisPegawai: widget.jenisPegawai,
+        prodi: widget.prodi,
+        email: widget.email,
+        hp: widget.hp,
+      ));
+    }
   }
 
   void _selectOption(String questionId, int questionNo, int score) {
@@ -111,12 +153,24 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
       return;
     }
 
+    // Pastikan ada jawaban yang akan disimpan
+    if (answers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: Tidak ada jawaban yang akan disimpan'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     print('=== SUBMITTING FINAL ANSWERS ===');
     final finalAnswers = {
       "answers": answers
     };
     print('Final answers to submit: $finalAnswers');
     print('Response ID: $responseId');
+    print('Answers count: ${answers.length}');
     
     // Kirim jawaban final dengan SaveAnswersEvent
     mentalhealthBloc.add(SaveAnswersEvent(
@@ -179,7 +233,9 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
       body: BlocListener<MentalhealthBloc, MentalhealthState>(
         listener: (context, state) {
           // Listen untuk response create answers (untuk mendapatkan response_id)
-          if (state.statusCreateAnswers == ResponseValidation.SUCCESS) {
+          if (state.statusCreateAnswers == ResponseValidation.LOADED) {
+            // Tunggu sampai status berubah ke SUCCESS
+          } else if (state.statusCreateAnswers == ResponseValidation.SUCCESS) {
             print('=== CREATE RESPONSE SUCCESS ===');
             print('Response data: ${state.dataCreateAnswers}');
             
@@ -202,22 +258,25 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
             );
           }
 
-          // Listen untuk response save answers (hasil akhir)
-          if (state.statusSaveAnswers == ResponseValidation.SUCCESS) {
+          // Listen untuk response save answers (setelah save, navigate ke counting page)
+          if (state.statusSaveAnswers == ResponseValidation.LOADED) {
+            // Tunggu sampai status berubah ke SUCCESS
+          } else if (state.statusSaveAnswers == ResponseValidation.SUCCESS && 
+              !_hasNavigatedToCounting && 
+              answers.isNotEmpty) { // Pastikan ada jawaban yang disimpan
             print('=== ANSWERS SAVED SUCCESSFULLY ===');
             print('Response: ${state.messageSaveAnswers}');
+            print('Answers count: ${answers.length}');
             
-            // Show success message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Jawaban berhasil disimpan!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-
-            // Navigate ke result page setelah berhasil save
-            Future.delayed(Duration(seconds: 1), () {
-              RouterNavigation.router.push(PAGESNAMES.mentalHealthResult.ScreenPath);
+            // Set flag untuk mencegah navigasi berulang
+            _hasNavigatedToCounting = true;
+            
+            // Navigate ke counting page untuk submit answers dengan delay
+            Future.delayed(Duration(milliseconds: 500), () {
+              if (mounted && _hasNavigatedToCounting) {
+                print('=== NAVIGATING TO COUNTING PAGE ===');
+                RouterNavigation.router.push(PAGESNAMES.mentalHealthCounting.ScreenPath);
+              }
             });
             
           } else if (state.statusSaveAnswers == ResponseValidation.FAIL) {
@@ -235,7 +294,9 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
         child: BlocBuilder<MentalhealthBloc, MentalhealthState>(
           builder: (context, state) {
             if (state.loadingQuestionnaire == ResponseValidation.LOADING ||
-                state.loadingCreateAnswers == ResponseValidation.LOADING) {
+                state.loadingCreateAnswers == ResponseValidation.LOADING ||
+                state.loadingSaveAnswers == ResponseValidation.LOADING ||
+                state.loadingSubmitAnswers == ResponseValidation.LOADING) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -247,7 +308,11 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
                     Text(
                       state.loadingCreateAnswers == ResponseValidation.LOADING 
                         ? 'Mempersiapkan kuesioner...'
-                        : 'Memuat pertanyaan...',
+                        : state.loadingSaveAnswers == ResponseValidation.LOADING
+                          ? 'Menyimpan jawaban...'
+                          : state.loadingSubmitAnswers == ResponseValidation.LOADING
+                            ? 'Mengirim jawaban...'
+                            : 'Memuat pertanyaan...',
                       style: TextStyle(fontSize: 14.sp),
                     ),
                   ],
@@ -421,7 +486,6 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
 
                     // Options
                     ...currentQuestion.options.asMap().entries.map((entry) {
-                      final index = entry.key;
                       final option = entry.value;
                       final isSelected =
                           _isOptionSelected(currentQuestion.id, option.score);
