@@ -44,10 +44,26 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _bloc = context.read<HomeBloc>();
     _getVersion();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userId = await username;
+      const questionnaireCode = 'DASS21';
+      const limit = '10';
+      await _getScoreHistoryWithType(userId, questionnaireCode, limit);
+    });
   }
 
   _getVersion() async {
     _bloc.add(GetVersionEvent());
+  }
+
+  // Get score history with type local datasource
+  Future<void> _getScoreHistoryWithType(String userId, String questionnaireCode, String limit) async {
+    final userType = (await type).trim(); // type: Future<String>
+    if (userType == "1") {
+      _bloc.add(GetScoreHistoryEvent(userId: userId, questionnaireCode: questionnaireCode));
+    } else {
+      _bloc.add(GetScoreAdminHistoryEvent(limit: limit));
+    }
   }
 
   void _showComingSoonDialog(String testName) {
@@ -124,6 +140,140 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  void _showDass21RequiredDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.orange[600],
+                size: 24.sp,
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                'Tes DASS21 Diperlukan',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange[600],
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Anda harus menyelesaikan Tes Kesehatan Mental (DASS21) terlebih dahulu sebelum dapat mengakses Tes Depresi.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: cPrimaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                'Silakan lakukan Tes Kesehatan Mental terlebih dahulu.',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.orange[600],
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Mengerti',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Color _getScoreColor(String category) {
+    switch (category.toLowerCase()) {
+      case 'tidak depresi':
+      case 'normal':
+      case 'ringan':
+        return Colors.green[600]!;
+      case 'sedang':
+      case 'berisiko':
+        return Colors.orange[600]!;
+      case 'berat':
+      case 'sangat berat':
+        return Colors.red[600]!;
+      default:
+        return Colors.grey[600]!;
+    }
+  }
+
+  IconData _getScoreIcon(String questionnaireCode) {
+    switch (questionnaireCode) {
+      case 'DASS21':
+        return Icons.psychology;
+      case 'BDI2':
+        return Icons.favorite;
+      default:
+        return Icons.quiz;
+    }
+  }
+
+  String _getTestName(String questionnaireCode) {
+    switch (questionnaireCode) {
+      case 'DASS21':
+        return 'Tes Kesehatan Mental';
+      case 'BDI2':
+        return 'Tes Depresi';
+      default:
+        return 'Tes Lainnya';
+    }
+  }
+
+  String _formatDate(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays == 0) {
+      return 'Hari ini';
+    } else if (difference.inDays == 1) {
+      return 'Kemarin';
+    } else if (difference.inDays < 7) {
+      return '${difference.inDays} hari yang lalu';
+    } else if (difference.inDays < 30) {
+      final weeks = (difference.inDays / 7).floor();
+      return weeks == 1 ? '1 minggu yang lalu' : '$weeks minggu yang lalu';
+    } else {
+      final months = (difference.inDays / 30).floor();
+      return months == 1 ? '1 bulan yang lalu' : '$months bulan yang lalu';
+    }
   }
 
   @override
@@ -528,6 +678,12 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () async {
+                                    // Check if DASS21 has been completed
+                                    if (state.dataScoreHistory?.dataScore.scores.any((score) => score.questionnaireCode == 'DASS21') != true) {
+                                      _showDass21RequiredDialog();
+                                      return;
+                                    }
+                                    
                                     final extra = {
                                       'questionnaireCode': 'BDI2',
                                       'userId': await username,
@@ -740,12 +896,17 @@ class _HomePageState extends State<HomePage> {
                                         color: cPrimaryText,
                                       ),
                                     ),
-                                    Text(
-                                      'Lihat Semua',
-                                      style: TextStyle(
-                                        fontSize: 12.sp,
-                                        color: cPrimary,
-                                        fontWeight: FontWeight.w500,
+                                    GestureDetector(
+                                      onTap: () {
+                                        RouterNavigation.router.push(PAGESNAMES.history.ScreenPath);
+                                      },
+                                      child: Text(
+                                        'Lihat Semua',
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: cPrimary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -753,146 +914,117 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 2.h),
 
                                 // Test History Items
-                                Column(
-                                  children: [
-                                    // Recent Test 1
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 2.h, horizontal: 3.w),
-                                      decoration: BoxDecoration(
-                                        color: cBackground,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 12.w,
-                                            height: 6.h,
-                                            decoration: BoxDecoration(
-                                              color: cPrimary.withValues(
-                                                  alpha: 0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Icon(
-                                              Icons.psychology,
-                                              color: cPrimary,
-                                              size: 20.sp,
-                                            ),
-                                          ),
-                                          SizedBox(width: 3.w),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Tes Kesehatan Mental',
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: cPrimaryText,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 0.5.h),
-                                                Text(
-                                                  'Skor: 25 (Normal)',
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.green[600],
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 0.5.h),
-                                                Text(
-                                                  '2 hari yang lalu',
-                                                  style: TextStyle(
-                                                    fontSize: 11.sp,
-                                                    color: Colors.grey[600],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Colors.grey[400],
-                                            size: 16.sp,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                BlocBuilder<HomeBloc, HomeState>(
+                                  builder: (context, state) {
+                                    if (state.loadingScoreHistory == ResponseValidation.LOADING) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation<Color>(cPrimary),
+                                        ),
+                                      );
+                                    }
 
-                                    SizedBox(height: 1.5.h),
+                                    if (state.dataScoreHistory?.dataScore.scores.isEmpty ?? true) {
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(vertical: 4.h),
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.quiz_outlined,
+                                              size: 48.sp,
+                                              color: Colors.grey[400],
+                                            ),
+                                            SizedBox(height: 2.h),
+                                            Text(
+                                              'Belum ada riwayat tes',
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            SizedBox(height: 0.5.h),
+                                            Text(
+                                              'Mulai lakukan tes untuk melihat riwayat',
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                color: Colors.grey[500],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
 
-                                    // Recent Test 2
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 2.h, horizontal: 3.w),
-                                      decoration: BoxDecoration(
-                                        color: cBackground,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 12.w,
-                                            height: 6.h,
-                                            decoration: BoxDecoration(
-                                              color: Colors.orange
-                                                  .withValues(alpha: 0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Icon(
-                                              Icons.favorite,
-                                              color: Colors.orange[600],
-                                              size: 20.sp,
-                                            ),
+                                    return Column(
+                                      children: state.dataScoreHistory!.dataScore.scores.take(2).map((score) {
+                                        return Container(
+                                          margin: EdgeInsets.only(bottom: 1.5.h),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 2.h, horizontal: 3.w),
+                                          decoration: BoxDecoration(
+                                            color: cBackground,
+                                            borderRadius: BorderRadius.circular(10),
                                           ),
-                                          SizedBox(width: 3.w),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Tes Depresi',
-                                                  style: TextStyle(
-                                                    fontSize: 14.sp,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: cPrimaryText,
-                                                  ),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 12.w,
+                                                height: 6.h,
+                                                decoration: BoxDecoration(
+                                                  color: _getScoreColor(score.category).withValues(alpha: 0.1),
+                                                  borderRadius: BorderRadius.circular(8),
                                                 ),
-                                                SizedBox(height: 0.5.h),
-                                                Text(
-                                                  'Skor: 18 (Berisiko)',
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Colors.orange[600],
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
+                                                child: Icon(
+                                                  _getScoreIcon(score.questionnaireCode),
+                                                  color: _getScoreColor(score.category),
+                                                  size: 20.sp,
                                                 ),
-                                                SizedBox(height: 0.5.h),
-                                                Text(
-                                                  '1 minggu yang lalu',
-                                                  style: TextStyle(
-                                                    fontSize: 11.sp,
-                                                    color: Colors.grey[600],
-                                                  ),
+                                              ),
+                                              SizedBox(width: 3.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      _getTestName(score.questionnaireCode),
+                                                      style: TextStyle(
+                                                        fontSize: 14.sp,
+                                                        fontWeight: FontWeight.bold,
+                                                        color: cPrimaryText,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 0.5.h),
+                                                    // Text(
+                                                    //   'Kategori: ${score.category}',
+                                                    //   style: TextStyle(
+                                                    //     fontSize: 12.sp,
+                                                    //     color: _getScoreColor(score.category),
+                                                    //     fontWeight: FontWeight.w500,
+                                                    //   ),
+                                                    // ),
+                                                    // SizedBox(height: 0.5.h),
+                                                    Text(
+                                                      _formatDate(score.submittedAt),
+                                                      style: TextStyle(
+                                                        fontSize: 11.sp,
+                                                        color: Colors.grey[600],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward_ios,
+                                                color: Colors.grey[400],
+                                                size: 16.sp,
+                                              ),
+                                            ],
                                           ),
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            color: Colors.grey[400],
-                                            size: 16.sp,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                        );
+                                      }).toList(),
+                                    );
+                                  },
                                 ),
                               ],
                             ),

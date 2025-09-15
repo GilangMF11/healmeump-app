@@ -14,8 +14,8 @@ enum PAGESNAMES {
   tips,
   tipDetails,
   about,
-  support
-
+  support,
+  history
 }
 
 extension AppPageExtension on PAGESNAMES {
@@ -53,6 +53,8 @@ extension AppPageExtension on PAGESNAMES {
         return '/about';
       case PAGESNAMES.support:
         return '/support';
+      case PAGESNAMES.history:
+        return '/history';
       }
   }
 
@@ -90,6 +92,8 @@ extension AppPageExtension on PAGESNAMES {
         return 'about';
       case PAGESNAMES.support:
         return 'support';
+      case PAGESNAMES.history:
+        return 'history';
     }
   }
 }

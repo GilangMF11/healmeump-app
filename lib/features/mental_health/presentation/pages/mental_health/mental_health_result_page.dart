@@ -81,6 +81,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                     },
                     child: Text('Kembali ke Beranda'),
                   ),
+                  SizedBox(height: 3.h),
                 ],
               ),
             );

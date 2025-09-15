@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:healmeumpapp/features/auth/presentation/pages/login_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/about_page.dart';
+import 'package:healmeumpapp/features/home/presentation/pages/history_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/home_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/support_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/depression/depression_page.dart';
@@ -134,6 +135,12 @@ class RouterNavigation {
         path: PAGESNAMES.support.ScreenPath,
         name: PAGESNAMES.support.ScreenName,
         builder: (context, state) => const SupportPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.history.ScreenPath,
+        name: PAGESNAMES.history.ScreenName,
+        builder: (context, state) => const HistoryPage(),
       ),
 
       // GoRoute(
