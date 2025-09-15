@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:healmeumpapp/features/home/domain/entities/export_entities.dart';
+import 'package:healmeumpapp/features/home/domain/entities/score_admin_entities.dart';
+import 'package:healmeumpapp/features/home/domain/entities/score_entities.dart';
 import 'package:healmeumpapp/features/home/domain/entities/version_entities.dart';
 
 class HomeState extends Equatable {
@@ -19,6 +22,9 @@ class HomeState extends Equatable {
   final String? messageExportAdminHistory;
   // Data
   final VersionEntities? dataVersion;
+  final ScoreEntities? dataScoreHistory;
+  final ScoreAdminEntities? dataScoreAdminHistory;
+  final ExportEntities? dataExportAdminHistory;
 
   const HomeState({
     this.loadingVersion = false,
@@ -34,6 +40,9 @@ class HomeState extends Equatable {
     this.messageScoreAdminHistory,
     this.messageExportAdminHistory,
     this.dataVersion,
+    this.dataScoreHistory,
+    this.dataScoreAdminHistory,
+    this.dataExportAdminHistory,
   });
 
   HomeState copyWith({
@@ -50,6 +59,9 @@ class HomeState extends Equatable {
     String? messageScoreAdminHistory,
     String? messageExportAdminHistory,
     VersionEntities? dataVersion,
+    ScoreEntities? dataScoreHistory,
+    ScoreAdminEntities? dataScoreAdminHistory,
+    ExportEntities? dataExportAdminHistory,
   }) =>
       HomeState(
         loadingVersion: loadingVersion ?? this.loadingVersion,
@@ -71,6 +83,9 @@ class HomeState extends Equatable {
         messageExportAdminHistory:
             messageExportAdminHistory ?? this.messageExportAdminHistory,
         dataVersion: dataVersion ?? this.dataVersion,
+        dataScoreHistory: dataScoreHistory ?? this.dataScoreHistory,
+        dataScoreAdminHistory: dataScoreAdminHistory ?? this.dataScoreAdminHistory,
+        dataExportAdminHistory: dataExportAdminHistory ?? this.dataExportAdminHistory,
       );
 
   @override
@@ -87,6 +102,9 @@ class HomeState extends Equatable {
         messageScoreAdminHistory,
         loadingExportAdminHistory,
         statusExportAdminHistory,
-        messageExportAdminHistory
+        messageExportAdminHistory,
+        dataScoreHistory,
+        dataScoreAdminHistory,
+        dataExportAdminHistory,
       ];
 }
