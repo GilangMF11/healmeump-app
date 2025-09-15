@@ -57,7 +57,7 @@ class DataMentalHealthEntities extends Equatable {
 }
 
 class MetaEntities extends Equatable {
-  final List<int> options;
+  final List<dynamic> options; // Changed from List<int> to List<dynamic>
 
   const MetaEntities({
     required this.options,

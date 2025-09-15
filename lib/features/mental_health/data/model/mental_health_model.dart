@@ -84,13 +84,13 @@ class DataMentalHealth {
 
   factory DataMentalHealth.fromJson(Map<String, dynamic> json) => DataMentalHealth(
         id: json["id"] ?? "",
-        questionnaireId: json["questionnaire_id"] ?? "",
+        questionnaireId: json["questionnaireId"] ?? json["questionnaire_id"] ?? "",
         number: json["number"] ?? 0,
-        orderNumber: json["order_number"] ?? 0,
+        orderNumber: json["orderNumber"] ?? json["order_number"] ?? 0,
         text: json["text"] ?? "",
         domain: domainValues.map[json["domain"]] ?? Domain.D,
-        isReverse: json["is_reverse"] ?? false,
-        maxScore: json["max_score"] ?? 0,
+        isReverse: json["isReverse"] ?? json["is_reverse"] ?? false,
+        maxScore: json["maxScore"] ?? json["max_score"] ?? 0,
         meta: json["meta"] != null ? Meta.fromJson(json["meta"]) : Meta(options: []),
         options: json["options"] != null && json["options"] is List
             ? List<Option>.from(json["options"].map((x) => Option.fromJson(x)))
@@ -149,7 +149,7 @@ final domainValues = EnumValues({
 });
 
 class Meta {
-  final List<int> options;
+  final List<dynamic> options; // Changed from List<int> to List<dynamic>
 
   Meta({
     required this.options,
@@ -161,7 +161,7 @@ class Meta {
 
   factory Meta.fromJson(Map<String, dynamic> json) => Meta(
         options: json["options"] != null && json["options"] is List
-            ? List<int>.from(json["options"].map((x) => x))
+            ? List<dynamic>.from(json["options"]) // Changed to handle both int and Map
             : [],
       );
 
@@ -170,7 +170,7 @@ class Meta {
       };
 
   Meta copyWith({
-    List<int>? options,
+    List<dynamic>? options,
   }) =>
       Meta(
         options: options ?? this.options,

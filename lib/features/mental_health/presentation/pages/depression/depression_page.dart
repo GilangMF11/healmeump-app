@@ -481,10 +481,13 @@ class _DepressionPageState extends State<DepressionPage> {
             
             // Options
             ...currentQuestion.meta.options.map<Widget>((option) {
-              final isSelected = _isOptionSelected(currentQuestion.id, option.score);
+              // Handle both Map<String, dynamic> and Option object
+              final score = option is Map<String, dynamic> ? option['score'] as int : option.score;
+              final label = option is Map<String, dynamic> ? option['label'] as String : option.label;
+              final isSelected = _isOptionSelected(currentQuestion.id, score);
               return GestureDetector(
                 onTap: () {
-                  _selectOption(currentQuestion.id, currentQuestion.number, option.score);
+                  _selectOption(currentQuestion.id, currentQuestion.number, score);
                 },
                 child: Container(
                   width: sWidthFull(context),
@@ -529,7 +532,7 @@ class _DepressionPageState extends State<DepressionPage> {
                       SizedBox(width: 3.w),
                       Expanded(
                         child: Text(
-                          option.label,
+                          label,
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: isSelected ? cPrimary : cPrimaryText,

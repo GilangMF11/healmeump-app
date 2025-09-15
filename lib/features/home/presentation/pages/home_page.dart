@@ -50,6 +50,82 @@ class _HomePageState extends State<HomePage> {
     _bloc.add(GetVersionEvent());
   }
 
+  void _showComingSoonDialog(String testName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline,
+                color: cPrimary,
+                size: 24.sp,
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                'Coming Soon',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: cPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$testName akan segera hadir!',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: cPrimaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                'Fitur ini sedang dalam pengembangan dan akan segera tersedia untuk Anda.',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: cPrimary,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -517,8 +593,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
-                                    // RouterNavigation.router.push(
-                                    //     PAGESNAMES.mentalHealth.ScreenPath);
+                                    _showComingSoonDialog("Tes Kecemasan");
                                   },
                                   child: Row(
                                     children: [
@@ -571,8 +646,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
-                                    // RouterNavigation.router.push(
-                                    //     PAGESNAMES.mentalHealth.ScreenPath);
+                                    _showComingSoonDialog("Tes Stres");
                                   },
                                   child: Row(
                                     children: [
