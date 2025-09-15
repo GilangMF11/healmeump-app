@@ -5,6 +5,9 @@ import 'package:healmeumpapp/features/auth/presentation/pages/login_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/about_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/home_page.dart';
 import 'package:healmeumpapp/features/home/presentation/pages/support_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/depression/depression_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/depression/depression_counting_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/depression/depression_result_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_counting_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_result_page.dart';
@@ -72,6 +75,32 @@ class RouterNavigation {
       ),
 
       GoRoute(
+        path: PAGESNAMES.depression.ScreenPath,
+        name: PAGESNAMES.depression.ScreenName,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>;
+          final questionnaireCode = extra['questionnaireCode'];
+          final userId = extra['userId'];
+          final namaPegawai = extra['namaPegawai'];
+          final nip = extra['nip'];
+          final jenisPegawai = extra['jenisPegawai'];
+          final prodi = extra['prodi'];
+          final email = extra['email'];
+          final hp = extra['hp'];
+          return DepressionPage(
+            questionnaireCode: questionnaireCode,
+            userId: userId,
+            namaPegawai: namaPegawai,
+            nip: nip,
+            jenisPegawai: jenisPegawai,
+            prodi: prodi,
+            email: email,
+            hp: hp,
+          );
+        },
+      ),
+
+      GoRoute(
         path: PAGESNAMES.mentalHealthCounting.ScreenPath,
         name: PAGESNAMES.mentalHealthCounting.ScreenName,
         builder: (context, state) => const MentalHealthCountingPage(),
@@ -81,6 +110,18 @@ class RouterNavigation {
         path: PAGESNAMES.mentalHealthResult.ScreenPath,
         name: PAGESNAMES.mentalHealthResult.ScreenName,
         builder: (context, state) => const MentalHealthResultPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.depressionCounting.ScreenPath,
+        name: PAGESNAMES.depressionCounting.ScreenName,
+        builder: (context, state) => const DepressionCountingPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.depressionResult.ScreenPath,
+        name: PAGESNAMES.depressionResult.ScreenName,
+        builder: (context, state) => const DepressionResultPage(),
       ),
 
       GoRoute(

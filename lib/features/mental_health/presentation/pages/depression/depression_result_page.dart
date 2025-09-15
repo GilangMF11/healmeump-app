@@ -9,21 +9,21 @@ import 'package:healmeumpapp/router/pages_names.dart';
 import 'package:healmeumpapp/router/router_navigation.dart';
 import 'package:sizer/sizer.dart';
 
-class MentalHealthResultPage extends StatefulWidget {
-  const MentalHealthResultPage({super.key});
+class DepressionResultPage extends StatefulWidget {
+  const DepressionResultPage({super.key});
 
   @override
-  State<MentalHealthResultPage> createState() => _MentalHealthResultPageState();
+  State<DepressionResultPage> createState() => _DepressionResultPageState();
 }
 
-class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
+class _DepressionResultPageState extends State<DepressionResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: cPrimary,
         title: Text(
-          "Hasil Tes Kesehatan Mental",
+          "Hasil Tes Depresi",
           style: TextStyle(
             fontSize: 16.sp,
             fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                     
                     // Description
                     Text(
-                      "Terima kasih telah menyelesaikan tes kesehatan mental DASS-21. Berikut adalah hasil analisis berdasarkan jawaban Anda.",
+                      "Terima kasih telah menyelesaikan tes depresi BDI. Berikut adalah hasil analisis berdasarkan jawaban Anda.",
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: Colors.grey[600],
@@ -272,17 +272,17 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                     SizedBox(height: 2.h),
                     
                     _buildRecommendationItem(
-                      Icons.self_improvement,
-                      "Praktik Relaksasi",
-                      "Lakukan teknik pernapasan dalam, meditasi, atau yoga untuk mengurangi kecemasan.",
+                      Icons.psychology,
+                      "Konsultasi Profesional",
+                      "Pertimbangkan untuk berkonsultasi dengan psikolog atau psikiater untuk evaluasi lebih lanjut.",
                     ),
                     
                     SizedBox(height: 1.5.h),
                     
                     _buildRecommendationItem(
-                      Icons.sports,
-                      "Aktivitas Fisik",
-                      "Olahraga teratur dapat membantu mengurangi stres dan meningkatkan mood.",
+                      Icons.self_improvement,
+                      "Terapi Kognitif",
+                      "Terapi kognitif perilaku dapat membantu mengubah pola pikir negatif.",
                     ),
                     
                     SizedBox(height: 1.5.h),
@@ -298,7 +298,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                     _buildRecommendationItem(
                       Icons.schedule,
                       "Rutinitas Sehat",
-                      "Jaga pola tidur yang teratur, makan makanan bergizi, dan hindari konsumsi berlebihan.",
+                      "Jaga pola tidur yang teratur, makan makanan bergizi, dan lakukan aktivitas fisik.",
                     ),
                   ],
                 ),
@@ -366,7 +366,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
-                _getCategoryIcon(category),
+                Icons.psychology,
                 color: color,
                 size: 6.w,
               ),
@@ -476,20 +476,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     );
   }
 
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case "Depresi":
-        return Icons.mood_bad;
-      case "Kecemasan":
-        return Icons.psychology;
-      case "Stres":
-        return Icons.flash_on;
-      default:
-        return Icons.health_and_safety;
-    }
-  }
-
-  // Fungsi untuk menentukan kategori berdasarkan skor DASS-21
+  // Fungsi untuk menentukan kategori berdasarkan skor BDI
   CategoryInfo _getCategoryFromScore(dynamic score) {
     // Null safety check
     if (score == null) {
@@ -500,31 +487,14 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     }
     
     final finalScore = score.finalScore ?? 0;
-    final domain = score.domain ?? "Unknown";
     
-    // Kriteria DASS-21 untuk kategori berdasarkan final score
-    if (domain == "Depresi") {
-      return _getDepressionCategory(finalScore);
-    } else if (domain == "Kecemasan") {
-      return _getAnxietyCategory(finalScore);
-    } else if (domain == "Stres") {
-      return _getStressCategory(finalScore);
-    }
-    
-    // Default category
-    return CategoryInfo(
-      color: Colors.grey,
-      description: "Skor Anda menunjukkan tingkat $domain.",
-    );
-  }
-
-  CategoryInfo _getDepressionCategory(int finalScore) {
-    if (finalScore <= 9) {
+    // Kriteria BDI untuk kategori berdasarkan final score
+    if (finalScore <= 10) {
       return CategoryInfo(
         color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat depresi yang normal. Anda tidak menunjukkan tanda-tanda depresi yang signifikan.",
+        description: "Skor Anda menunjukkan tingkat depresi yang minimal. Anda tidak menunjukkan tanda-tanda depresi yang signifikan.",
       );
-    } else if (finalScore <= 13) {
+    } else if (finalScore <= 16) {
       return CategoryInfo(
         color: Colors.orange,
         description: "Skor Anda menunjukkan tingkat depresi ringan. Pertimbangkan untuk melakukan aktivitas yang menyenangkan dan menjaga rutinitas yang sehat.",
@@ -534,7 +504,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
         color: Colors.red,
         description: "Skor Anda menunjukkan tingkat depresi sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
       );
-    } else if (finalScore <= 27) {
+    } else if (finalScore <= 30) {
       return CategoryInfo(
         color: Colors.purple,
         description: "Skor Anda menunjukkan tingkat depresi parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
@@ -543,64 +513,6 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
       return CategoryInfo(
         color: Colors.red[900]!,
         description: "Skor Anda menunjukkan tingkat depresi yang sangat parah. Segera cari bantuan profesional kesehatan mental.",
-      );
-    }
-  }
-
-  CategoryInfo _getAnxietyCategory(int finalScore) {
-    if (finalScore <= 7) {
-      return CategoryInfo(
-        color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat kecemasan yang normal. Anda dapat mengelola kecemasan dengan baik.",
-      );
-    } else if (finalScore <= 9) {
-      return CategoryInfo(
-        color: Colors.orange,
-        description: "Skor Anda menunjukkan tingkat kecemasan ringan. Pertimbangkan untuk melakukan relaksasi dan teknik manajemen stres.",
-      );
-    } else if (finalScore <= 14) {
-      return CategoryInfo(
-        color: Colors.red,
-        description: "Skor Anda menunjukkan tingkat kecemasan sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
-      );
-    } else if (finalScore <= 19) {
-      return CategoryInfo(
-        color: Colors.purple,
-        description: "Skor Anda menunjukkan tingkat kecemasan parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
-      );
-    } else {
-      return CategoryInfo(
-        color: Colors.red[900]!,
-        description: "Skor Anda menunjukkan tingkat kecemasan yang sangat parah. Segera cari bantuan profesional kesehatan mental.",
-      );
-    }
-  }
-
-  CategoryInfo _getStressCategory(int finalScore) {
-    if (finalScore <= 14) {
-      return CategoryInfo(
-        color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat stres yang normal. Anda dapat mengelola stres dengan baik dalam kehidupan sehari-hari.",
-      );
-    } else if (finalScore <= 18) {
-      return CategoryInfo(
-        color: Colors.orange,
-        description: "Skor Anda menunjukkan tingkat stres ringan. Pertimbangkan untuk melakukan teknik relaksasi dan manajemen waktu.",
-      );
-    } else if (finalScore <= 25) {
-      return CategoryInfo(
-        color: Colors.red,
-        description: "Skor Anda menunjukkan tingkat stres sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
-      );
-    } else if (finalScore <= 33) {
-      return CategoryInfo(
-        color: Colors.purple,
-        description: "Skor Anda menunjukkan tingkat stres parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
-      );
-    } else {
-      return CategoryInfo(
-        color: Colors.red[900]!,
-        description: "Skor Anda menunjukkan tingkat stres yang sangat parah. Segera cari bantuan profesional kesehatan mental.",
       );
     }
   }

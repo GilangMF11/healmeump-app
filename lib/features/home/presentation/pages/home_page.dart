@@ -451,9 +451,20 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 SizedBox(height: 3.h),
                                 GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    final extra = {
+                                      'questionnaireCode': 'BDI2',
+                                      'userId': await username,
+                                      'namaPegawai': await name,
+                                      'nip': await username,
+                                      'jenisPegawai': await type == "1" ? "MAHASISWA" : "DOSEN",
+                                      'prodi': await studyProgram,
+                                      'email': await email,
+                                      'hp': await hp,
+                                    };
                                     RouterNavigation.router.push(
-                                        PAGESNAMES.mentalHealth.ScreenPath);
+                                        PAGESNAMES.depression.ScreenPath,
+                                        extra: extra);
                                   },
                                   child: Row(
                                     children: [
@@ -506,8 +517,8 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
-                                    RouterNavigation.router.push(
-                                        PAGESNAMES.mentalHealth.ScreenPath);
+                                    // RouterNavigation.router.push(
+                                    //     PAGESNAMES.mentalHealth.ScreenPath);
                                   },
                                   child: Row(
                                     children: [
@@ -560,8 +571,8 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
-                                    RouterNavigation.router.push(
-                                        PAGESNAMES.mentalHealth.ScreenPath);
+                                    // RouterNavigation.router.push(
+                                    //     PAGESNAMES.mentalHealth.ScreenPath);
                                   },
                                   child: Row(
                                     children: [

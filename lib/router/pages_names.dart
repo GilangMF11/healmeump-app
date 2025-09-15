@@ -7,6 +7,8 @@ enum PAGESNAMES {
   mentalHealthCounting,
   mentalHealthResult,
   depression,
+  depressionCounting,
+  depressionResult,
   anxiety,
   stress,
   tips,
@@ -35,6 +37,10 @@ extension AppPageExtension on PAGESNAMES {
         return '/mentalHealthResult';
       case PAGESNAMES.depression:
         return '/depression';
+      case PAGESNAMES.depressionCounting:
+        return '/depressionCounting';
+      case PAGESNAMES.depressionResult:
+        return '/depressionResult';
       case PAGESNAMES.anxiety:
         return '/anxiety';
       case PAGESNAMES.stress:
@@ -68,6 +74,10 @@ extension AppPageExtension on PAGESNAMES {
         return 'mentalHealthResult';
       case PAGESNAMES.depression:
         return 'depression';
+      case PAGESNAMES.depressionCounting:
+        return 'depressionCounting';
+      case PAGESNAMES.depressionResult:
+        return 'depressionResult';
       case PAGESNAMES.anxiety:
         return 'anxiety';
       case PAGESNAMES.stress:
