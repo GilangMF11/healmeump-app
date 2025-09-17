@@ -117,31 +117,67 @@ class Score {
 
 class Summary {
     final int totalResponses;
+    final int? totalScores; // Add totalScores field
     final List<String> questionnaires;
+    final List<QuestionnaireItem>? questionnaireItems; // Add questionnaire items with count
     final DateTime latestSubmission;
 
     Summary({
         required this.totalResponses,
+        this.totalScores,
         required this.questionnaires,
+        this.questionnaireItems,
         required this.latestSubmission,
     });
 
     factory Summary.fromJson(Map<String, dynamic> json) => Summary(
         totalResponses: json["totalResponses"] ?? 0,
+        totalScores: json["totalScores"], // Add totalScores parsing
         questionnaires: json["questionnaires"] != null && json["questionnaires"] is List
-            ? List<String>.from(json["questionnaires"].map((x) => x.toString()))
+            ? (json["questionnaires"].first is String
+                ? List<String>.from(json["questionnaires"].map((x) => x.toString()))
+                : []) // If questionnaires is array of objects, use empty list for backward compatibility
             : const [],
+        questionnaireItems: json["questionnaires"] != null && json["questionnaires"] is List
+            ? (json["questionnaires"].first is Map
+                ? List<QuestionnaireItem>.from(json["questionnaires"].map((x) => QuestionnaireItem.fromJson(x)))
+                : null) // If questionnaires is array of objects, parse as QuestionnaireItem
+            : null,
         latestSubmission: json["latestSubmission"] != null ? DateTime.parse(json["latestSubmission"]) : DateTime.fromMillisecondsSinceEpoch(0),
     );
 
     Summary copyWith({
         int? totalResponses,
+        int? totalScores,
         List<String>? questionnaires,
+        List<QuestionnaireItem>? questionnaireItems,
         DateTime? latestSubmission,
     }) => 
         Summary(
             totalResponses: totalResponses ?? this.totalResponses,
+            totalScores: totalScores ?? this.totalScores,
             questionnaires: questionnaires ?? this.questionnaires,
+            questionnaireItems: questionnaireItems ?? this.questionnaireItems,
             latestSubmission: latestSubmission ?? this.latestSubmission,
         );
+}
+
+class QuestionnaireItem {
+    final String code;
+    final int count;
+
+    QuestionnaireItem({
+        required this.code,
+        required this.count,
+    });
+
+    factory QuestionnaireItem.fromJson(Map<String, dynamic> json) => QuestionnaireItem(
+        code: json["code"] ?? "",
+        count: json["count"] ?? 0,
+    );
+
+    Map<String, dynamic> toJson() => {
+        "code": code,
+        "count": count,
+    };
 }

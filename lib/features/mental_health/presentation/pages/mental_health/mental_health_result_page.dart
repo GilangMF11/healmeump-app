@@ -18,6 +18,165 @@ class MentalHealthResultPage extends StatefulWidget {
 
 class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
   @override
+  void initState() {
+    super.initState();
+    // Check for depression result after a short delay to ensure UI is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkDepressionResult();
+    });
+  }
+
+  void _checkDepressionResult() {
+    // This will be called after the result content is built
+    // We'll check the depression result in _buildResultContent
+  }
+
+  void _checkDepressionResultAndShowDialog(dynamic dataSubmitAnswers) {
+    if (dataSubmitAnswers?.data?.scores != null) {
+      // Find depression score
+      final depressionScore = dataSubmitAnswers.data.scores.firstWhere(
+        (score) => score.domain == "Depresi",
+        orElse: () => null,
+      );
+
+      if (depressionScore != null) {
+        final finalScore = depressionScore.finalScore ?? 0;
+        
+        // Check if depression score indicates abnormal level (score > 9)
+        if (finalScore > 9) {
+          // Show dialog after a short delay to ensure UI is ready
+          Future.delayed(Duration(milliseconds: 500), () {
+            if (mounted) {
+              _showDepressionTestDialog();
+            }
+          });
+        }
+      }
+    }
+  }
+
+  void _showDepressionTestDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.psychology,
+                color: cPrimary,
+                size: 24.sp,
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                'Tes Depresi Disarankan',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: cPrimaryText,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Berdasarkan hasil tes kesehatan mental Anda, kami mendeteksi adanya indikasi depresi yang memerlukan evaluasi lebih lanjut.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: cPrimaryText,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                'Kami menyarankan Anda untuk melakukan tes depresi (BDI-2) untuk mendapatkan penilaian yang lebih spesifik dan akurat.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: cPrimaryText,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Container(
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  color: cPrimary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: cPrimary,
+                      size: 20.sp,
+                    ),
+                    SizedBox(width: 2.w),
+                    Expanded(
+                      child: Text(
+                        'Tes depresi akan memberikan analisis yang lebih detail tentang kondisi mental Anda.',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: cPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Nanti Saja',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _navigateToDepressionTest();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: cPrimary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+              ),
+              child: Text(
+                'Lakukan Tes Depresi',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _navigateToDepressionTest() async {
+    // Navigate to depression test
+    RouterNavigation.router.push(PAGESNAMES.depression.ScreenPath);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -115,6 +274,11 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
   }
 
   Widget _buildResultContent(dynamic dataSubmitAnswers) {
+    // Check for depression result and show dialog if needed
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkDepressionResultAndShowDialog(dataSubmitAnswers);
+    });
+
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
