@@ -202,8 +202,13 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget _buildHistoryList(HomeState state) {
-    final scores = state.dataScoreHistory!.dataScore.scores;
-    final summary = state.dataScoreHistory!.dataScore.summary;
+    final dataScoreHistory = state.dataScoreHistory;
+    if (dataScoreHistory == null) {
+      return _buildEmptyState();
+    }
+    
+    final scores = dataScoreHistory.dataScore.scores;
+    final summary = dataScoreHistory.dataScore.summary;
 
     return RefreshIndicator(
       onRefresh: _loadAllTestHistory,
@@ -326,7 +331,7 @@ class _HistoryPageState extends State<HistoryPage> {
             SizedBox(height: 2.h),
 
             // History Items
-            ...scores.map((score) => _buildHistoryItem(score)).toList(),
+            ...scores.expand((score) => score.domains.map((domain) => _buildHistoryItem(score, domain))).toList(),
             SizedBox(height: 2.h),
           ],
         ),
@@ -372,7 +377,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildHistoryItem(score) {
+  Widget _buildHistoryItem(score, domain) {
     return Container(
       margin: EdgeInsets.only(bottom: 2.h),
       padding: EdgeInsets.all(4.w),
@@ -396,12 +401,12 @@ class _HistoryPageState extends State<HistoryPage> {
                 width: 12.w,
                 height: 6.h,
                 decoration: BoxDecoration(
-                  color: _getScoreColor(score.category).withValues(alpha: 0.1),
+                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   _getScoreIcon(score.questionnaireCode),
-                  color: _getScoreColor(score.category),
+                  color: _getScoreColor(domain.category),
                   size: 24.sp,
                 ),
               ),
@@ -420,7 +425,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     ),
                     SizedBox(height: 0.5.h),
                     Text(
-                      'Domain: ${score.domain}',
+                      'Domain: ${domain.domain}',
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: Colors.grey[600],
@@ -432,15 +437,15 @@ class _HistoryPageState extends State<HistoryPage> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                 decoration: BoxDecoration(
-                  color: _getScoreColor(score.category).withValues(alpha: 0.1),
+                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  score.category,
+                  domain.category,
                   style: TextStyle(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
-                    color: _getScoreColor(score.category),
+                    color: _getScoreColor(domain.category),
                   ),
                 ),
               ),

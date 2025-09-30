@@ -445,10 +445,32 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
                     backgroundColor: Colors.grey[300],
                     valueColor: AlwaysStoppedAnimation<Color>(cPrimary),
                   ),
+                  SizedBox(height: 1.h),
+                  Row(
+                    children: [
+                      Icon(Icons.info, size: 14.sp, color: Colors.redAccent),
+                      SizedBox(width: 1.w),
+                      Text(
+                        "Petunjuk pengisian: ",
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 1.w),
+                  Text(
+                    "Pilihlah salah satu jawaban yang sesuai dengan apa yang Anda rasakan selama 1 minggu terakhir. Kerjakan 21 butir soal sampai selesai dengan skor akhir muncul.",
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: Colors.redAccent,
+                    ),
+                  ),
                 ],
               ),
             ),
-            SizedBox(height: 3.h),
+            SizedBox(height: 2.h),
 
             // Question container
             Container(
@@ -466,10 +488,10 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
               ),
               child: Padding(
                 padding: EdgeInsets.only(
-                  top: 3.h,
+                  top: 1.5.h,
                   left: 5.w,
                   right: 5.w,
-                  bottom: 3.h,
+                  bottom: 2.h,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -558,15 +580,15 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
                                                   : Colors.grey),
                                         ),
                                         SizedBox(height: 0.5.h),
-                                        Text(
-                                          'Score: ${option.score}',
-                                          style: TextStyle(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: isSelected
-                                                  ? cPrimary
-                                                  : Colors.grey),
-                                        ),
+                                        // Text(
+                                        //   'Score: ${option.score}',
+                                        //   style: TextStyle(
+                                        //       fontSize: 10.sp,
+                                        //       fontWeight: FontWeight.bold,
+                                        //       color: isSelected
+                                        //           ? cPrimary
+                                        //           : Colors.grey),
+                                        // ),
                                       ],
                                     ),
                                   ),
@@ -712,13 +734,13 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
   String _getOptionDescription(Label label) {
     switch (label) {
       case Label.TIDAK_PERNAH:
-        return "Tidak berlaku untuk saya sama sekali";
+        return "Tidak ada gejala sama sekali";
       case Label.KADANG_KADANG:
-        return "Berlaku untuk saya sampai taraf tertentu, atau kadang-kadang";
+        return "Gejala muncul 1 sampai 3 hari dalam seminggu";
       case Label.SERING:
-        return "Berlaku untuk saya sampai taraf yang dapat dikatakan, atau sering";
+        return "Gejala muncul 4 sampai 6 hari dalam seminggu";
       case Label.SANGAT_SERING:
-        return "Berlaku untuk saya, atau berlaku dikatakan hampir sepanjang waktu";
+        return "Gejala muncul hampir setiap hari dalam seminggu";
     }
   }
 }

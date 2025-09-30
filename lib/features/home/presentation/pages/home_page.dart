@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final userId = await username;
       final userType = await type;
-      const questionnaireCode = 'DASS21';
       const limit = '10';
       
       if (userType == "2") {
@@ -60,7 +59,7 @@ class _HomePageState extends State<HomePage> {
         ));
       } else {
         // User: Load user data
-        await _getScoreHistoryWithType(userId, questionnaireCode, limit);
+        await _getScoreHistoryWithType(userId, '', limit);
       }
     });
   }
@@ -513,12 +512,19 @@ class _HomePageState extends State<HomePage> {
                                   future: name,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      return Text(
-                                          snapshot.data ?? 'Nama Pengguna',
-                                          style: TextStyle(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white));
+                                      return SizedBox(
+                                        width: 60.w,
+                                        child: Text(
+                                            snapshot.data ?? 'Nama Pengguna',
+                                            style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                ),
+                                                
+                                      );
                                     } else {
                                       return Text("Nama Pengguna",
                                           style: TextStyle(
@@ -1134,15 +1140,31 @@ class _HomePageState extends State<HomePage> {
 
                                     if (state.dataScoreHistory?.dataScore.scores.isEmpty ?? true) {
                                       return Container(
-                                        padding: EdgeInsets.symmetric(vertical: 4.h),
+                                        width: sWidthFull(context),
+                                        margin: EdgeInsets.only(bottom: 1.5.h),
+                                        padding: EdgeInsets.only(
+                                          left: 5.w,
+                                          right: 5.w,
+                                          top: 3.h,
+                                          bottom: 3.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: cBackground,
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: Colors.grey[300]!,
+                                            width: 1,
+                                            style: BorderStyle.solid,
+                                          ),
+                                        ),
                                         child: Column(
                                           children: [
                                             Icon(
                                               Icons.quiz_outlined,
-                                              size: 48.sp,
+                                              size: 32.sp,
                                               color: Colors.grey[400],
                                             ),
-                                            SizedBox(height: 2.h),
+                                            SizedBox(height: 1.5.h),
                                             Text(
                                               'Belum ada riwayat tes',
                                               style: TextStyle(
@@ -1158,6 +1180,7 @@ class _HomePageState extends State<HomePage> {
                                                 fontSize: 12.sp,
                                                 color: Colors.grey[500],
                                               ),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ],
                                         ),
@@ -1165,7 +1188,7 @@ class _HomePageState extends State<HomePage> {
                                     }
 
                                     return Column(
-                                      children: state.dataScoreHistory!.dataScore.scores.take(2).map((score) {
+                                      children: state.dataScoreHistory!.dataScore.scores.take(2).expand((score) => score.domains.map((domain) {
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 1.5.h),
                                           padding: EdgeInsets.symmetric(
@@ -1180,12 +1203,12 @@ class _HomePageState extends State<HomePage> {
                                                 width: 12.w,
                                                 height: 6.h,
                                                 decoration: BoxDecoration(
-                                                  color: _getScoreColor(score.category).withValues(alpha: 0.1),
+                                                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
                                                   borderRadius: BorderRadius.circular(8),
                                                 ),
                                                 child: Icon(
                                                   _getScoreIcon(score.questionnaireCode),
-                                                  color: _getScoreColor(score.category),
+                                                  color: _getScoreColor(domain.category),
                                                   size: 20.sp,
                                                 ),
                                               ),
@@ -1203,15 +1226,14 @@ class _HomePageState extends State<HomePage> {
                                                       ),
                                                     ),
                                                     SizedBox(height: 0.5.h),
-                                                    // Text(
-                                                    //   'Kategori: ${score.category}',
-                                                    //   style: TextStyle(
-                                                    //     fontSize: 12.sp,
-                                                    //     color: _getScoreColor(score.category),
-                                                    //     fontWeight: FontWeight.w500,
-                                                    //   ),
-                                                    // ),
-                                                    // SizedBox(height: 0.5.h),
+                                                    Text(
+                                                      'Domain: ${domain.domain}',
+                                                      style: TextStyle(
+                                                        fontSize: 12.sp,
+                                                        color: Colors.grey[600],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 0.5.h),
                                                     Text(
                                                       _formatDate(score.submittedAt),
                                                       style: TextStyle(
@@ -1222,6 +1244,22 @@ class _HomePageState extends State<HomePage> {
                                                   ],
                                                 ),
                                               ),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                                                decoration: BoxDecoration(
+                                                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: Text(
+                                                  domain.category,
+                                                  style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                    color: _getScoreColor(domain.category),
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 2.w),
                                               Icon(
                                                 Icons.arrow_forward_ios,
                                                 color: Colors.grey[400],
@@ -1230,7 +1268,7 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                         );
-                                      }).toList(),
+                                      })).toList(),
                                     );
                                   },
                                 ),
@@ -1634,15 +1672,30 @@ class _HomePageState extends State<HomePage> {
 
                       if (state.dataScoreAdminHistory?.dataScore.scores.isEmpty ?? true) {
                         return Container(
-                          padding: EdgeInsets.symmetric(vertical: 4.h),
+                          margin: EdgeInsets.only(bottom: 1.5.h),
+                          padding: EdgeInsets.only(
+                            left: 5.w,
+                            right: 5.w,
+                            top: 3.h,
+                            bottom: 3.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: cBackground,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey[300]!,
+                              width: 1,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
                           child: Column(
                             children: [
                               Icon(
                                 Icons.quiz_outlined,
-                                size: 48.sp,
+                                size: 32.sp,
                                 color: Colors.grey[400],
                               ),
-                              SizedBox(height: 2.h),
+                              SizedBox(height: 1.5.h),
                               Text(
                                 'Belum ada riwayat tes',
                                 style: TextStyle(
@@ -1651,13 +1704,22 @@ class _HomePageState extends State<HomePage> {
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
+                              SizedBox(height: 0.5.h),
+                              Text(
+                                'Data tes akan muncul setelah ada pengguna yang melakukan tes',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[500],
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
                             ],
                           ),
                         );
                       }
 
                       return Column(
-                        children: state.dataScoreAdminHistory!.dataScore.scores.take(5).map((score) {
+                        children: state.dataScoreAdminHistory!.dataScore.scores.take(5).expand((score) => score.domains.map((domain) {
                           return Container(
                             margin: EdgeInsets.only(bottom: 1.5.h),
                             padding: EdgeInsets.symmetric(
@@ -1672,12 +1734,12 @@ class _HomePageState extends State<HomePage> {
                                   width: 12.w,
                                   height: 6.h,
                                   decoration: BoxDecoration(
-                                    color: _getCategoryColor(score.category).withValues(alpha: 0.1),
+                                    color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     _getQuestionnaireIcon(score.questionnaireCode),
-                                    color: _getCategoryColor(score.category),
+                                    color: _getCategoryColor(domain.category),
                                     size: 20.sp,
                                   ),
                                 ),
@@ -1696,7 +1758,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       SizedBox(height: 0.5.h),
                                       Text(
-                                        'Domain: ${score.domain}',
+                                        'Domain: ${domain.domain}',
                                         style: TextStyle(
                                           fontSize: 12.sp,
                                           color: Colors.grey[600],
@@ -1716,14 +1778,14 @@ class _HomePageState extends State<HomePage> {
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                                   decoration: BoxDecoration(
-                                    color: _getCategoryColor(score.category).withValues(alpha: 0.1),
+                                    color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
-                                    score.category,
+                                    domain.category,
                                     style: TextStyle(
                                       fontSize: 10.sp,
-                                      color: _getCategoryColor(score.category),
+                                      color: _getCategoryColor(domain.category),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -1731,7 +1793,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                           );
-                        }).toList(),
+                        })).toList(),
                       );
                     },
                   ),
@@ -1757,7 +1819,9 @@ class _HomePageState extends State<HomePage> {
     // Count each category from scores
     final categoryCounts = <String, int>{};
     for (final score in scores) {
-      categoryCounts[score.category] = (categoryCounts[score.category] ?? 0) + 1;
+      for (final domain in score.domains) {
+        categoryCounts[domain.category] = (categoryCounts[domain.category] ?? 0) + 1;
+      }
     }
 
     return Column(
@@ -2081,7 +2145,9 @@ class _HomePageState extends State<HomePage> {
     // Count categories from scores data
     final categoryCounts = <String, int>{};
     for (final score in scores) {
-      categoryCounts[score.category] = (categoryCounts[score.category] ?? 0) + 1;
+      for (final domain in score.domains) {
+        categoryCounts[domain.category] = (categoryCounts[domain.category] ?? 0) + 1;
+      }
     }
     
     print('DEBUG CATEGORIES: categoryCounts: $categoryCounts');
@@ -2293,7 +2359,9 @@ class _HomePageState extends State<HomePage> {
             // Count domains for this questionnaire
             final domainCounts = <String, int>{};
             for (final score in questionnaireScores) {
-              domainCounts[score.domain] = (domainCounts[score.domain] ?? 0) + 1;
+              for (final domain in score.domains) {
+                domainCounts[domain.domain] = (domainCounts[domain.domain] ?? 0) + 1;
+              }
             }
 
             return Container(

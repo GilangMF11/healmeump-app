@@ -69,49 +69,70 @@ class DataScore {
 class Score {
     final String id;
     final String questionnaireCode;
-    final String domain;
-    final int rawScore;
-    final int finalScore;
-    final String category;
     final DateTime submittedAt;
+    final List<DomainScore> domains;
 
     Score({
         required this.id,
         required this.questionnaireCode,
-        required this.domain,
-        required this.rawScore,
-        required this.finalScore,
-        required this.category,
         required this.submittedAt,
+        required this.domains,
     });
 
     factory Score.fromJson(Map<String, dynamic> json) => Score(
         id: json["id"] ?? "",
         questionnaireCode: json["questionnaireCode"] ?? "",
-        domain: json["domain"] ?? "",
-        rawScore: json["rawScore"] ?? 0,
-        finalScore: json["finalScore"] ?? 0,
-        category: json["category"] ?? "",
         submittedAt: json["submittedAt"] != null ? DateTime.parse(json["submittedAt"]) : DateTime.fromMillisecondsSinceEpoch(0),
+        domains: json["domains"] != null && json["domains"] is List
+            ? List<DomainScore>.from(json["domains"].map((x) => DomainScore.fromJson(x)))
+            : const [],
     );
 
     Score copyWith({
         String? id,
         String? questionnaireCode,
-        String? domain,
-        int? rawScore,
-        int? finalScore,
-        String? category,
         DateTime? submittedAt,
+        List<DomainScore>? domains,
     }) => 
         Score(
             id: id ?? this.id,
             questionnaireCode: questionnaireCode ?? this.questionnaireCode,
+            submittedAt: submittedAt ?? this.submittedAt,
+            domains: domains ?? this.domains,
+        );
+}
+
+class DomainScore {
+    final String domain;
+    final int rawScore;
+    final int finalScore;
+    final String category;
+
+    DomainScore({
+        required this.domain,
+        required this.rawScore,
+        required this.finalScore,
+        required this.category,
+    });
+
+    factory DomainScore.fromJson(Map<String, dynamic> json) => DomainScore(
+        domain: json["domain"] ?? "",
+        rawScore: json["rawScore"] ?? 0,
+        finalScore: json["finalScore"] ?? 0,
+        category: json["category"] ?? "",
+    );
+
+    DomainScore copyWith({
+        String? domain,
+        int? rawScore,
+        int? finalScore,
+        String? category,
+    }) => 
+        DomainScore(
             domain: domain ?? this.domain,
             rawScore: rawScore ?? this.rawScore,
             finalScore: finalScore ?? this.finalScore,
             category: category ?? this.category,
-            submittedAt: submittedAt ?? this.submittedAt,
         );
 }
 
@@ -133,13 +154,13 @@ class Summary {
     factory Summary.fromJson(Map<String, dynamic> json) => Summary(
         totalResponses: json["totalResponses"] ?? 0,
         totalScores: json["totalScores"], // Add totalScores parsing
-        questionnaires: json["questionnaires"] != null && json["questionnaires"] is List
-            ? (json["questionnaires"].first is String
+        questionnaires: json["questionnaires"] != null && json["questionnaires"] is List && (json["questionnaires"] as List).isNotEmpty
+            ? ((json["questionnaires"] as List).first is String
                 ? List<String>.from(json["questionnaires"].map((x) => x.toString()))
                 : []) // If questionnaires is array of objects, use empty list for backward compatibility
             : const [],
-        questionnaireItems: json["questionnaires"] != null && json["questionnaires"] is List
-            ? (json["questionnaires"].first is Map
+        questionnaireItems: json["questionnaires"] != null && json["questionnaires"] is List && (json["questionnaires"] as List).isNotEmpty
+            ? ((json["questionnaires"] as List).first is Map
                 ? List<QuestionnaireItem>.from(json["questionnaires"].map((x) => QuestionnaireItem.fromJson(x)))
                 : null) // If questionnaires is array of objects, parse as QuestionnaireItem
             : null,
