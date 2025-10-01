@@ -853,27 +853,27 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     if (finalScore <= 9) {
       return CategoryInfo(
         color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat depresi yang normal. Anda tidak menunjukkan tanda-tanda depresi yang signifikan.",
+        description: "Skor Anda menunjukkan tingkat depresi yang normal. Tidak ada gejala depresi yang berarti",
       );
     } else if (finalScore <= 13) {
       return CategoryInfo(
         color: Colors.orange,
-        description: "Skor Anda menunjukkan tingkat depresi ringan. Pertimbangkan untuk melakukan aktivitas yang menyenangkan dan menjaga rutinitas yang sehat.",
+        description: "Skor Anda menunjukkan tingkat depresi ringan. Muncul perasaan sedih dan tidak bersemangat secara berkala namun masih bisa mengerjakan kegiatan sehari=hari",
       );
     } else if (finalScore <= 20) {
       return CategoryInfo(
         color: Colors.red,
-        description: "Skor Anda menunjukkan tingkat depresi sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat depresi sedang. Anda merasakan hal negative dalam waktu lama, tidak ada motivasi dan mulai sulit mengerjakan kegiatan sehari-hari.",
       );
     } else if (finalScore <= 27) {
       return CategoryInfo(
         color: Colors.purple,
-        description: "Skor Anda menunjukkan tingkat depresi parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat depresi parah. Anda merasa sedih, tidak berharga, putus asa secara terus-menerus. Susah konsentrasi dan menjalankan tugas sederhana. Butuh bantuan professional",
       );
     } else {
       return CategoryInfo(
         color: Colors.red[900]!,
-        description: "Skor Anda menunjukkan tingkat depresi yang sangat parah. Segera cari bantuan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat depresi yang sangat parah. Anda merasa sedih, tidak berharga, putus asa secara terus-menerus. Susah konsentrasi dan menjalankan tugas sederhana. Butuh bantuan professional.",
       );
     }
   }
@@ -882,22 +882,22 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     if (finalScore <= 7) {
       return CategoryInfo(
         color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat kecemasan yang normal. Anda dapat mengelola kecemasan dengan baik.",
+        description: "Skor Anda menunjukkan tingkat kecemasan yang normal. Tidak ada gejala kecemasan yang berarti.",
       );
     } else if (finalScore <= 9) {
       return CategoryInfo(
         color: Colors.orange,
-        description: "Skor Anda menunjukkan tingkat kecemasan ringan. Pertimbangkan untuk melakukan relaksasi dan teknik manajemen stres.",
+        description: "Skor Anda menunjukkan tingkat kecemasan ringan. Merasakan tegang otot, grogi, sulit konsentrasi namun tidak mengganggu kegiatan sehari-hari.",
       );
     } else if (finalScore <= 14) {
       return CategoryInfo(
         color: Colors.red,
-        description: "Skor Anda menunjukkan tingkat kecemasan sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat kecemasan sedang. Munculnya gejala kecemasan fisiologis seperti gemetar, jantung berdebar, mulai ada gangguan konsentrasi.",
       );
     } else if (finalScore <= 19) {
       return CategoryInfo(
         color: Colors.purple,
-        description: "Skor Anda menunjukkan tingkat kecemasan parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat kecemasan parah. Munculnya kepanikan, sulit tenang dan sudah mengganggu aktivitas sehari-hari. Disarankan untuk mencari bantuan profesional.",
       );
     } else {
       return CategoryInfo(
@@ -911,27 +911,27 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     if (finalScore <= 14) {
       return CategoryInfo(
         color: Colors.green,
-        description: "Skor Anda menunjukkan tingkat stres yang normal. Anda dapat mengelola stres dengan baik dalam kehidupan sehari-hari.",
+        description: "Skor Anda menunjukkan tingkat stres yang normal. Tidak ada gejala stres yang berarti. Mampu mengatasi masalah hidup sehari-hari.",
       );
     } else if (finalScore <= 18) {
       return CategoryInfo(
         color: Colors.orange,
-        description: "Skor Anda menunjukkan tingkat stres ringan. Pertimbangkan untuk melakukan teknik relaksasi dan manajemen waktu.",
+        description: "Skor Anda menunjukkan tingkat stres ringan. Munculnya perasaan tegang dan cemas, namun tidak mengganggu aktivitas sehari-hari.",
       );
     } else if (finalScore <= 25) {
       return CategoryInfo(
         color: Colors.red,
-        description: "Skor Anda menunjukkan tingkat stres sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat stres sedang. Munculnya perasaan cemas, tegang dan sulit rileks",
       );
     } else if (finalScore <= 33) {
       return CategoryInfo(
         color: Colors.purple,
-        description: "Skor Anda menunjukkan tingkat stres parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat stres parah. Munculnya gejala stress yang berarti perasaan tegang, cemas, tegang, dan sudah mengganggu kehidupan dan aktivitas sehari-hari.",
       );
     } else {
       return CategoryInfo(
         color: Colors.red[900]!,
-        description: "Skor Anda menunjukkan tingkat stres yang sangat parah. Segera cari bantuan profesional kesehatan mental.",
+        description: "Skor Anda menunjukkan tingkat stres yang sangat parah. Munculnya gejala stress yang berarti perasaan tegang, cemas, tegang, dan sudah mengganggu kehidupan dan aktivitas sehari-hari.",
       );
     }
   }
