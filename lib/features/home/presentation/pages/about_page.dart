@@ -281,6 +281,27 @@ class AboutPage extends StatelessWidget {
                         ),
                         textAlign: TextAlign.justify,
                       ),
+
+                      SizedBox(height: 2.h),
+                      Text(
+                        'Sumber: ',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: cPrimaryText,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                      SizedBox(height: 1.h),
+                      Text(
+                        'Lovibond, P. F., & Lovibond, S. H. (1995). The structure of negative emotional states: Comparison of the Depression Anxiety Stress Scales (DASS) with the Beck Depression and Anxiety Inventories. Behaviour Research and Therapy, 33(3), 335–343. https://doi.org/10.1016/0005-7967(94)00075-U',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: cPrimaryText,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
                     ],
                   ),
                 ),

@@ -7,6 +7,7 @@ import 'package:healmeumpapp/global/constant/colors_pick.dart';
 import 'package:healmeumpapp/global/constant/size.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
 import 'package:healmeumpapp/router/router_navigation.dart';
+import 'package:healmeumpapp/shared/local_datasource.dart';
 import 'package:sizer/sizer.dart';
 
 class MentalHealthResultPage extends StatefulWidget {
@@ -17,13 +18,28 @@ class MentalHealthResultPage extends StatefulWidget {
 }
 
 class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
+  bool _hasShownDepressionDialog = false;
+  bool _isCheckingDepression = false;
+
   @override
   void initState() {
     super.initState();
+    // Reset flags when page is initialized
+    _hasShownDepressionDialog = false;
+    _isCheckingDepression = false;
+    
     // Check for depression result after a short delay to ensure UI is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkDepressionResult();
     });
+  }
+
+  @override
+  void dispose() {
+    // Reset flags when page is disposed
+    _hasShownDepressionDialog = false;
+    _isCheckingDepression = false;
+    super.dispose();
   }
 
   void _checkDepressionResult() {
@@ -32,30 +48,89 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
   }
 
   void _checkDepressionResultAndShowDialog(dynamic dataSubmitAnswers) {
-    if (dataSubmitAnswers?.data?.scores != null) {
-      // Find depression score
-      final depressionScore = dataSubmitAnswers.data.scores.firstWhere(
-        (score) => score.domain == "Depresi",
-        orElse: () => null,
-      );
+    // Prevent multiple checks and dialog appearances
+    if (_isCheckingDepression || _hasShownDepressionDialog) {
+      print('DEBUG: Skipping depression check - already checked or dialog shown');
+      return;
+    }
 
-      if (depressionScore != null) {
-        final finalScore = depressionScore.finalScore ?? 0;
-        
-        // Check if depression score indicates abnormal level (score > 9)
-        if (finalScore > 9) {
-          // Show dialog after a short delay to ensure UI is ready
-          Future.delayed(Duration(milliseconds: 500), () {
-            if (mounted) {
-              _showDepressionTestDialog();
-            }
-          });
+    print('DEBUG: _checkDepressionResultAndShowDialog called');
+    print('DEBUG: dataSubmitAnswers: ${dataSubmitAnswers != null}');
+    print('DEBUG: dataSubmitAnswers.data: ${dataSubmitAnswers?.data != null}');
+    print('DEBUG: dataSubmitAnswers.data.scores: ${dataSubmitAnswers?.data?.scores != null}');
+    
+    if (dataSubmitAnswers?.data?.scores != null) {
+      _isCheckingDepression = true;
+      print('DEBUG: scores length: ${dataSubmitAnswers.data.scores.length}');
+      
+      try {
+        // Find depression score using loop instead of firstWhere to avoid type issues
+        dynamic depressionScore;
+        for (final score in dataSubmitAnswers.data.scores) {
+          print('DEBUG: checking score domain: ${score.domain}');
+          if (score.domain == "Depresi") {
+            depressionScore = score;
+            break;
+          }
         }
+
+        if (depressionScore != null) {
+          final finalScore = depressionScore.finalScore ?? 0;
+          print('DEBUG: depression finalScore: $finalScore');
+          
+          final depressionCategory = _getDepressionCategory(finalScore);
+          print('DEBUG: depression category color: ${depressionCategory.color}');
+          
+          // Check if depression category is not normal (ringan, sedang, parah, sangat parah)
+          if (finalScore > 9 && !_hasShownDepressionDialog) {
+            print('DEBUG: Final score > 9, showing dialog');
+            _hasShownDepressionDialog = true;
+            
+            // Show dialog after a short delay to ensure UI is ready
+            Future.delayed(Duration(milliseconds: 500), () {
+              if (mounted && _hasShownDepressionDialog) {
+                print('DEBUG: Showing depression dialog');
+                _showDepressionTestDialog(depressionCategory);
+              }
+            });
+          } else {
+            print('DEBUG: Final score <= 9 or dialog already shown, not showing dialog');
+          }
+        } else {
+          print('DEBUG: No depression score found');
+        }
+      } catch (e) {
+        print('Error in _checkDepressionResultAndShowDialog: $e');
+        // Fallback: try to find depression score using different approach
+        try {
+          for (final score in dataSubmitAnswers.data.scores) {
+            if (score.domain == "Depresi") {
+              final finalScore = score.finalScore ?? 0;
+              final depressionCategory = _getDepressionCategory(finalScore);
+              
+              if (finalScore > 9 && !_hasShownDepressionDialog) {
+                _hasShownDepressionDialog = true;
+                Future.delayed(Duration(milliseconds: 500), () {
+                  if (mounted && _hasShownDepressionDialog) {
+                    _showDepressionTestDialog(depressionCategory);
+                  }
+                });
+              }
+              break;
+            }
+          }
+        } catch (fallbackError) {
+          print('Fallback error: $fallbackError');
+        }
+      } finally {
+        _isCheckingDepression = false;
       }
+    } else {
+      print('DEBUG: dataSubmitAnswers or scores is null');
     }
   }
 
-  void _showDepressionTestDialog() {
+  void _showDepressionTestDialog(CategoryInfo depressionCategory) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -68,7 +143,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
             children: [
               Icon(
                 Icons.psychology,
-                color: cPrimary,
+                color: depressionCategory.color,
                 size: 24.sp,
               ),
               SizedBox(width: 2.w),
@@ -86,6 +161,40 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  color: depressionCategory.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: depressionCategory.color.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Kategori Depresi Anda:',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: cPrimaryText,
+                      ),
+                    ),
+                    SizedBox(height: 0.5.h),
+                    Text(
+                      _getDepressionCategoryName(depressionCategory.color),
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                        color: depressionCategory.color,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 2.h),
               Text(
                 'Berdasarkan hasil tes kesehatan mental Anda, kami mendeteksi adanya indikasi depresi yang memerlukan evaluasi lebih lanjut.',
                 style: TextStyle(
@@ -93,7 +202,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                   color: cPrimaryText,
                 ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 1.h),
               Text(
                 'Kami menyarankan Anda untuk melakukan tes depresi (BDI-2) untuk mendapatkan penilaian yang lebih spesifik dan akurat.',
                 style: TextStyle(
@@ -105,14 +214,14 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
               Container(
                 padding: EdgeInsets.all(3.w),
                 decoration: BoxDecoration(
-                  color: cPrimary.withValues(alpha: 0.1),
+                  color: depressionCategory.color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.info_outline,
-                      color: cPrimary,
+                      color: depressionCategory.color,
                       size: 20.sp,
                     ),
                     SizedBox(width: 2.w),
@@ -121,7 +230,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                         'Tes depresi akan memberikan analisis yang lebih detail tentang kondisi mental Anda.',
                         style: TextStyle(
                           fontSize: 12.sp,
-                          color: cPrimary,
+                          color: depressionCategory.color,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -150,7 +259,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                 _navigateToDepressionTest();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: cPrimary,
+                backgroundColor: depressionCategory.color,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -172,8 +281,57 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
   }
 
   void _navigateToDepressionTest() async {
-    // Navigate to depression test
-    RouterNavigation.router.push(PAGESNAMES.depression.ScreenPath);
+    try {
+      // Get user data from local storage
+      final username = await LocalDataSource().getUsername();
+      final name = await LocalDataSource().getName();
+      final type = await LocalDataSource().getType();
+      final studyProgram = await LocalDataSource().getStudyProgram();
+      final email = await LocalDataSource().getEmail();
+      final hp = await LocalDataSource().getPhoneNumber();
+      
+      // Prepare extra parameters for depression page
+      final extra = {
+        'questionnaireCode': 'BDI2',
+        'userId': username,
+        'namaPegawai': name,
+        'nip': username,
+        'jenisPegawai': type == "1" ? "MAHASISWA" : "DOSEN",
+        'prodi': studyProgram,
+        'email': email,
+        'hp': hp,
+      };
+      
+      print('DEBUG: Navigating to depression page with extra: $extra');
+      
+      // Navigate to depression test with proper parameters using go instead of push
+      // This prevents user from going back to mental health test
+      RouterNavigation.router.go(
+        PAGESNAMES.depression.ScreenPath,
+        extra: extra,
+      );
+    } catch (e) {
+      print('Error in _navigateToDepressionTest: $e');
+      // Fallback navigation without extra parameters
+      RouterNavigation.router.go(PAGESNAMES.depression.ScreenPath);
+    }
+  }
+
+  // Method untuk mendapatkan nama kategori depresi berdasarkan warna
+  String _getDepressionCategoryName(Color color) {
+    if (color == Colors.green) {
+      return 'Normal';
+    } else if (color == Colors.orange) {
+      return 'Ringan';
+    } else if (color == Colors.red) {
+      return 'Sedang';
+    } else if (color == Colors.purple) {
+      return 'Parah';
+    } else if (color == Colors.red[900]) {
+      return 'Sangat Parah';
+    } else {
+      return 'Tidak Diketahui';
+    }
   }
 
   @override
@@ -275,9 +433,12 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
 
   Widget _buildResultContent(dynamic dataSubmitAnswers) {
     // Check for depression result and show dialog if needed
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkDepressionResultAndShowDialog(dataSubmitAnswers);
-    });
+    // Only check once when data is loaded and dialog hasn't been shown
+    if (!_hasShownDepressionDialog && !_isCheckingDepression) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkDepressionResultAndShowDialog(dataSubmitAnswers);
+      });
+    }
 
     return SingleChildScrollView(
       child: Padding(
@@ -342,6 +503,11 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                       ),
                       textAlign: TextAlign.center,
                     ),
+                    SizedBox(height: 2.h),
+                    
+                    // Total Score Section
+                    if (dataSubmitAnswers.data != null && dataSubmitAnswers.data.scores.isNotEmpty)
+                      _buildTotalScoreSection(dataSubmitAnswers.data.scores),
                   ],
                 ),
               ),
@@ -769,6 +935,126 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
       );
     }
   }
+
+  // Method untuk membangun section total skor
+  Widget _buildTotalScoreSection(List scores) {
+    final totalScoreInfo = _calculateTotalScore(scores);
+    
+    return Container(
+      width: sWidthFull(context),
+      padding: EdgeInsets.all(4.w),
+      decoration: BoxDecoration(
+        color: totalScoreInfo.color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: totalScoreInfo.color.withValues(alpha: 0.3),
+          width: 2,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.analytics,
+                color: totalScoreInfo.color,
+                size: 20.sp,
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                'Total Skor',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: cPrimaryText,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 1.h),
+          Text(
+            '${totalScoreInfo.totalScore}',
+            style: TextStyle(
+              fontSize: 32.sp,
+              fontWeight: FontWeight.bold,
+              color: totalScoreInfo.color,
+            ),
+          ),
+          SizedBox(height: 0.5.h),
+          Text(
+            'Kategori: ${totalScoreInfo.category}',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w600,
+              color: totalScoreInfo.color,
+            ),
+          ),
+          SizedBox(height: 1.h),
+          Text(
+            totalScoreInfo.description,
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: Colors.grey[700],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method untuk menghitung total skor
+  TotalScoreInfo _calculateTotalScore(List scores) {
+    num totalScore = 0;
+    
+    // Hitung total skor berdasarkan formula: (Depresi x 2) + (Kecemasan x 2) + (Stres x 2)
+    for (final score in scores) {
+      totalScore += score.finalScore ?? 0;
+    }
+    
+    return _getTotalScoreCategory(totalScore.toInt());
+  }
+
+  // Method untuk menentukan kategori berdasarkan total skor
+  TotalScoreInfo _getTotalScoreCategory(int totalScore) {
+    if (totalScore >= 0 && totalScore <= 30) {
+      return TotalScoreInfo(
+        totalScore: totalScore,
+        category: 'Normal',
+        color: Colors.green,
+        description: 'Skor total Anda menunjukkan kondisi kesehatan mental yang normal. Pertahankan pola hidup sehat dan seimbang.',
+      );
+    } else if (totalScore >= 31 && totalScore <= 50) {
+      return TotalScoreInfo(
+        totalScore: totalScore,
+        category: 'Ringan',
+        color: Colors.orange,
+        description: 'Skor total Anda menunjukkan kondisi kesehatan mental ringan. Pertimbangkan untuk melakukan aktivitas relaksasi dan manajemen stres.',
+      );
+    } else if (totalScore >= 51 && totalScore <= 70) {
+      return TotalScoreInfo(
+        totalScore: totalScore,
+        category: 'Sedang',
+        color: Colors.red,
+        description: 'Skor total Anda menunjukkan kondisi kesehatan mental sedang. Disarankan untuk berkonsultasi dengan profesional kesehatan mental.',
+      );
+    } else if (totalScore >= 71 && totalScore <= 90) {
+      return TotalScoreInfo(
+        totalScore: totalScore,
+        category: 'Parah',
+        color: Colors.purple,
+        description: 'Skor total Anda menunjukkan kondisi kesehatan mental parah. Sangat disarankan untuk segera berkonsultasi dengan profesional kesehatan mental.',
+      );
+    } else {
+      return TotalScoreInfo(
+        totalScore: totalScore,
+        category: 'Sangat Parah',
+        color: Colors.red[900]!,
+        description: 'Skor total Anda menunjukkan kondisi kesehatan mental yang sangat parah. Segera cari bantuan profesional kesehatan mental.',
+      );
+    }
+  }
 }
 
 // Class untuk menyimpan informasi kategori
@@ -777,6 +1063,21 @@ class CategoryInfo {
   final String description;
 
   CategoryInfo({
+    required this.color,
+    required this.description,
+  });
+}
+
+// Class untuk menyimpan informasi total skor
+class TotalScoreInfo {
+  final int totalScore;
+  final String category;
+  final Color color;
+  final String description;
+
+  TotalScoreInfo({
+    required this.totalScore,
+    required this.category,
     required this.color,
     required this.description,
   });
