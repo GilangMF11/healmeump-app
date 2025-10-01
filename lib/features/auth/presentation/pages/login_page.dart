@@ -42,7 +42,28 @@ class _LoginPageState extends State<LoginPage> {
               print("Message: ${state.messageLogin}");
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.messageLogin ?? ""),
+                  content: Text(
+                    "Kata sandi atau username salah!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  backgroundColor: Colors.red[600],
+                  duration: Duration(seconds: 4),
+                  behavior: SnackBarBehavior.floating,
+                  margin: EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  action: SnackBarAction(
+                    label: 'Tutup',
+                    textColor: Colors.white,
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
                 ),
               );
             }
@@ -305,14 +326,58 @@ class _LoginPageState extends State<LoginPage> {
                             String password = passwordController.text.trim();
                             if (username.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text("Username tidak boleh kosong")));
+                                SnackBar(
+                                  content: Text(
+                                    "Username tidak boleh kosong",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.orange[600],
+                                  duration: Duration(seconds: 3),
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.all(16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  action: SnackBarAction(
+                                    label: 'Tutup',
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                    },
+                                  ),
+                                ),
+                              );
                             } else if (password.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text("Password tidak boleh kosong")));
+                                SnackBar(
+                                  content: Text(
+                                    "Password tidak boleh kosong",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.orange[600],
+                                  duration: Duration(seconds: 3),
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.all(16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  action: SnackBarAction(
+                                    label: 'Tutup',
+                                    textColor: Colors.white,
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                    },
+                                  ),
+                                ),
+                              );
                             } else {
                               context.read<AuthBloc>().add(
                                     AuthLoginEvent(

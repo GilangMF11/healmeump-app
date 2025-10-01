@@ -894,8 +894,9 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () async {
-                                    // Check if DASS21 has been completed
-                                    if (state.dataScoreHistory?.dataScore.scores.any((score) => score.questionnaireCode == 'DASS21') != true) {
+                                    final hasCompletedMentalHealth = _hasCompletedMentalHealthTest(state);
+                                    
+                                    if (!hasCompletedMentalHealth) {
                                       _showDass21RequiredDialog();
                                       return;
                                     }
@@ -920,7 +921,7 @@ class _HomePageState extends State<HomePage> {
                                         height: 8.h,
                                         width: 20.w,
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFFAEBEE),
+                                          color: _getCardBackgroundColor('depression', _hasCompletedMentalHealthTest(state)),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -943,13 +944,15 @@ class _HomePageState extends State<HomePage> {
                                               style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.bold,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                             Text(
-                                              "Evaluasi tingkat depresi Anda",
+                                              _hasCompletedMentalHealthTest(state) 
+                                                  ? "Evaluasi tingkat depresi Anda"
+                                                  : "Selesaikan Tes Kesehatan Mental terlebih dahulu",
                                               style: TextStyle(
                                                   fontSize: 12.sp,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                           ],
                                         ),
@@ -957,7 +960,7 @@ class _HomePageState extends State<HomePage> {
                                       Icon(
                                         Icons.arrow_forward_ios,
                                         size: 14.sp,
-                                        color: Colors.black,
+                                        color: _hasCompletedMentalHealthTest(state) ? Colors.black : Colors.grey[400],
                                       )
                                     ],
                                   ),
@@ -965,6 +968,13 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
+                                    final hasCompletedMentalHealth = _hasCompletedMentalHealthTest(state);
+                                    
+                                    if (!hasCompletedMentalHealth) {
+                                      _showDass21RequiredDialog();
+                                      return;
+                                    }
+                                    
                                     _showComingSoonDialog("Tes Kecemasan");
                                   },
                                   child: Row(
@@ -973,7 +983,7 @@ class _HomePageState extends State<HomePage> {
                                         height: 8.h,
                                         width: 20.w,
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFFDF2DB),
+                                          color: _getCardBackgroundColor('anxiety', _hasCompletedMentalHealthTest(state)),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -996,13 +1006,15 @@ class _HomePageState extends State<HomePage> {
                                               style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.bold,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                             Text(
-                                              "Ukur tingkat kecemasan Anda",
+                                              _hasCompletedMentalHealthTest(state) 
+                                                  ? "Ukur tingkat kecemasan Anda"
+                                                  : "Selesaikan Tes Kesehatan Mental terlebih dahulu",
                                               style: TextStyle(
                                                   fontSize: 12.sp,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                           ],
                                         ),
@@ -1010,7 +1022,7 @@ class _HomePageState extends State<HomePage> {
                                       Icon(
                                         Icons.arrow_forward_ios,
                                         size: 14.sp,
-                                        color: Colors.black,
+                                        color: _hasCompletedMentalHealthTest(state) ? Colors.black : Colors.grey[400],
                                       )
                                     ],
                                   ),
@@ -1018,6 +1030,13 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: 3.h),
                                 GestureDetector(
                                   onTap: () {
+                                    final hasCompletedMentalHealth = _hasCompletedMentalHealthTest(state);
+                                    
+                                    if (!hasCompletedMentalHealth) {
+                                      _showDass21RequiredDialog();
+                                      return;
+                                    }
+                                    
                                     _showComingSoonDialog("Tes Stres");
                                   },
                                   child: Row(
@@ -1026,7 +1045,7 @@ class _HomePageState extends State<HomePage> {
                                         height: 8.h,
                                         width: 20.w,
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFEEE9FE),
+                                          color: _getCardBackgroundColor('stress', _hasCompletedMentalHealthTest(state)),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -1049,13 +1068,15 @@ class _HomePageState extends State<HomePage> {
                                               style: TextStyle(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.bold,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                             Text(
-                                              "Evaluasi Tingkat stres harian",
+                                              _hasCompletedMentalHealthTest(state) 
+                                                  ? "Evaluasi Tingkat stres harian"
+                                                  : "Selesaikan Tes Kesehatan Mental terlebih dahulu",
                                               style: TextStyle(
                                                   fontSize: 12.sp,
-                                                  color: cPrimaryText),
+                                                  color: _getTextColor(_hasCompletedMentalHealthTest(state))),
                                             ),
                                           ],
                                         ),
@@ -1063,7 +1084,7 @@ class _HomePageState extends State<HomePage> {
                                       Icon(
                                         Icons.arrow_forward_ios,
                                         size: 14.sp,
-                                        color: Colors.black,
+                                        color: _hasCompletedMentalHealthTest(state) ? Colors.black : Colors.grey[400],
                                       )
                                     ],
                                   ),
@@ -2308,6 +2329,34 @@ class _HomePageState extends State<HomePage> {
       default:
         return Colors.grey;
     }
+  }
+
+  // Method untuk mengecek apakah user sudah melakukan tes kesehatan mental
+  bool _hasCompletedMentalHealthTest(HomeState state) {
+    return state.dataScoreHistory?.dataScore.scores.any((score) => score.questionnaireCode == 'DASS21') ?? false;
+  }
+
+  // Method untuk mendapatkan warna dan opacity berdasarkan status tes
+  Color _getCardBackgroundColor(String testType, bool isEnabled) {
+    if (!isEnabled) {
+      return Colors.grey[300]!; // Abu-abu untuk disabled
+    }
+    
+    switch (testType) {
+      case 'depression':
+        return Color(0xFFFAEBEE); // Pink untuk depresi
+      case 'anxiety':
+        return Color(0xFFFDF2DB); // Kuning untuk kecemasan
+      case 'stress':
+        return Color(0xFFEEE9FE); // Ungu untuk stres
+      default:
+        return Colors.grey[300]!;
+    }
+  }
+
+  // Method untuk mendapatkan warna text berdasarkan status
+  Color _getTextColor(bool isEnabled) {
+    return isEnabled ? cPrimaryText : Colors.grey[500]!;
   }
 
   // User Score Group Widget
