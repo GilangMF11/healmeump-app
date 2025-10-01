@@ -31,6 +31,8 @@ class _HomePageState extends State<HomePage> {
   late Future<String> type;
   late Future<String> hp;
   late Future<String> email;
+  final Map<String, bool> _expandedScores = {};
+  final Map<String, bool> _expandedAdminScores = {};
 
   @override
   void initState() {
@@ -1188,87 +1190,7 @@ class _HomePageState extends State<HomePage> {
                                     }
 
                                     return Column(
-                                      children: state.dataScoreHistory!.dataScore.scores.take(2).expand((score) => score.domains.map((domain) {
-                                        return Container(
-                                          margin: EdgeInsets.only(bottom: 1.5.h),
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 2.h, horizontal: 3.w),
-                                          decoration: BoxDecoration(
-                                            color: cBackground,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: 12.w,
-                                                height: 6.h,
-                                                decoration: BoxDecoration(
-                                                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
-                                                  borderRadius: BorderRadius.circular(8),
-                                                ),
-                                                child: Icon(
-                                                  _getScoreIcon(score.questionnaireCode),
-                                                  color: _getScoreColor(domain.category),
-                                                  size: 20.sp,
-                                                ),
-                                              ),
-                                              SizedBox(width: 3.w),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      _getTestName(score.questionnaireCode),
-                                                      style: TextStyle(
-                                                        fontSize: 14.sp,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: cPrimaryText,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 0.5.h),
-                                                    Text(
-                                                      'Domain: ${domain.domain}',
-                                                      style: TextStyle(
-                                                        fontSize: 12.sp,
-                                                        color: Colors.grey[600],
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 0.5.h),
-                                                    Text(
-                                                      _formatDate(score.submittedAt),
-                                                      style: TextStyle(
-                                                        fontSize: 11.sp,
-                                                        color: Colors.grey[600],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                                decoration: BoxDecoration(
-                                                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
-                                                  borderRadius: BorderRadius.circular(12),
-                                                ),
-                                                child: Text(
-                                                  domain.category,
-                                                  style: TextStyle(
-                                                    fontSize: 10.sp,
-                                                    color: _getScoreColor(domain.category),
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 2.w),
-                                              Icon(
-                                                Icons.arrow_forward_ios,
-                                                color: Colors.grey[400],
-                                                size: 16.sp,
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      })).toList(),
+                                      children: state.dataScoreHistory!.dataScore.scores.take(2).map((score) => _buildUserScoreGroup(score)).toList(),
                                     );
                                   },
                                 ),
@@ -1719,81 +1641,7 @@ class _HomePageState extends State<HomePage> {
                       }
 
                       return Column(
-                        children: state.dataScoreAdminHistory!.dataScore.scores.take(5).expand((score) => score.domains.map((domain) {
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 1.5.h),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 2.h, horizontal: 3.w),
-                            decoration: BoxDecoration(
-                              color: cBackground,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 12.w,
-                                  height: 6.h,
-                                  decoration: BoxDecoration(
-                                    color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    _getQuestionnaireIcon(score.questionnaireCode),
-                                    color: _getCategoryColor(domain.category),
-                                    size: 20.sp,
-                                  ),
-                                ),
-                                SizedBox(width: 3.w),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        _getQuestionnaireName(score.questionnaireCode),
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: cPrimaryText,
-                                        ),
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Text(
-                                        'Domain: ${domain.domain}',
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                      SizedBox(height: 0.5.h),
-                                      Text(
-                                        _formatDate(score.submittedAt),
-                                        style: TextStyle(
-                                          fontSize: 11.sp,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                                  decoration: BoxDecoration(
-                                    color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    domain.category,
-                                    style: TextStyle(
-                                      fontSize: 10.sp,
-                                      color: _getCategoryColor(domain.category),
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        })).toList(),
+                        children: state.dataScoreAdminHistory!.dataScore.scores.take(5).map((score) => _buildAdminScoreGroup(score)).toList(),
                       );
                     },
                   ),
@@ -2460,5 +2308,523 @@ class _HomePageState extends State<HomePage> {
       default:
         return Colors.grey;
     }
+  }
+
+  // User Score Group Widget
+  Widget _buildUserScoreGroup(score) {
+    final isExpanded = _expandedScores[score.id] ?? false;
+    
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      decoration: BoxDecoration(
+        color: cBackground,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header - Clickable to expand/collapse
+          InkWell(
+            onTap: () {
+              setState(() {
+                _expandedScores[score.id] = !isExpanded;
+              });
+            },
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 12.w,
+                        height: 6.h,
+                        decoration: BoxDecoration(
+                          color: cPrimary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          _getScoreIcon(score.questionnaireCode),
+                          color: cPrimary,
+                          size: 20.sp,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _getTestName(score.questionnaireCode),
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                                color: cPrimaryText,
+                              ),
+                            ),
+                            SizedBox(height: 0.5.h),
+                            Text(
+                              '${_formatDate(score.submittedAt)}',
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: Colors.grey[600],
+                        size: 20.sp,
+                      ),
+                    ],
+                  ),
+                  
+                  // Domain summary - always visible
+                  SizedBox(height: 1.5.h),
+                  _buildUserDomainSummary(score.domains),
+                ],
+              ),
+            ),
+          ),
+          
+          // Expandable detailed scores
+          if (isExpanded) ...[
+            Divider(height: 1, color: Colors.grey[200]),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detail Skor',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: cPrimaryText,
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  ...score.domains.map((domain) => _buildUserDetailedDomainItem(domain)).toList(),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserDomainSummary(List domains) {
+    return Row(
+      children: domains.map((domain) => Expanded(
+        child: Container(
+          margin: EdgeInsets.only(right: 1.w),
+          padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
+          decoration: BoxDecoration(
+            color: _getScoreColor(domain.category).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: _getScoreColor(domain.category).withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                domain.domain,
+                style: TextStyle(
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w600,
+                  color: cPrimaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.3.h),
+              Text(
+                domain.category,
+                style: TextStyle(
+                  fontSize: 8.sp,
+                  fontWeight: FontWeight.w500,
+                  color: _getScoreColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.2.h),
+              Text(
+                '${domain.finalScore}',
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.bold,
+                  color: _getScoreColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      )).toList(),
+    );
+  }
+
+  Widget _buildUserDetailedDomainItem(domain) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 0.8.h),
+      padding: EdgeInsets.all(2.5.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(6),
+        border: Border(
+          left: BorderSide(
+            color: _getScoreColor(domain.category),
+            width: 2,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  domain.domain,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: cPrimaryText,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.3.h),
+                decoration: BoxDecoration(
+                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  domain.category,
+                  style: TextStyle(
+                    fontSize: 8.sp,
+                    fontWeight: FontWeight.w600,
+                    color: _getScoreColor(domain.category),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 0.8.h),
+          Row(
+            children: [
+              Expanded(
+                child: _buildUserScoreDetail('Raw Score', domain.rawScore, Colors.blue[600]!),
+              ),
+              SizedBox(width: 1.5.w),
+              Expanded(
+                child: _buildUserScoreDetail('Final Score', domain.finalScore, _getScoreColor(domain.category)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserScoreDetail(String label, int score, Color color) {
+    return Container(
+      padding: EdgeInsets.all(1.5.w),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8.sp,
+              color: Colors.grey[600],
+            ),
+          ),
+          SizedBox(height: 0.2.h),
+          Text(
+            '$score',
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Admin Score Group Widget
+  Widget _buildAdminScoreGroup(score) {
+    final isExpanded = _expandedAdminScores[score.id] ?? false;
+    
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      decoration: BoxDecoration(
+        color: cBackground,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header - Clickable to expand/collapse
+          InkWell(
+            onTap: () {
+              setState(() {
+                _expandedAdminScores[score.id] = !isExpanded;
+              });
+            },
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 12.w,
+                        height: 6.h,
+                        decoration: BoxDecoration(
+                          color: cPrimary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          _getQuestionnaireIcon(score.questionnaireCode),
+                          color: cPrimary,
+                          size: 20.sp,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _getQuestionnaireName(score.questionnaireCode),
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.bold,
+                                color: cPrimaryText,
+                              ),
+                            ),
+                            SizedBox(height: 0.5.h),
+                            Text(
+                              '${_formatDate(score.submittedAt)}',
+                              style: TextStyle(
+                                fontSize: 11.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: Colors.grey[600],
+                        size: 20.sp,
+                      ),
+                    ],
+                  ),
+                  
+                  // Domain summary - always visible
+                  SizedBox(height: 1.5.h),
+                  _buildAdminDomainSummary(score.domains),
+                ],
+              ),
+            ),
+          ),
+          
+          // Expandable detailed scores
+          if (isExpanded) ...[
+            Divider(height: 1, color: Colors.grey[200]),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.5.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detail Skor',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: cPrimaryText,
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  ...score.domains.map((domain) => _buildAdminDetailedDomainItem(domain)).toList(),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdminDomainSummary(List domains) {
+    return Row(
+      children: domains.map((domain) => Expanded(
+        child: Container(
+          margin: EdgeInsets.only(right: 1.w),
+          padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
+          decoration: BoxDecoration(
+            color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: _getCategoryColor(domain.category).withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                domain.domain,
+                style: TextStyle(
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w600,
+                  color: cPrimaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.3.h),
+              Text(
+                domain.category,
+                style: TextStyle(
+                  fontSize: 8.sp,
+                  fontWeight: FontWeight.w500,
+                  color: _getCategoryColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.2.h),
+              Text(
+                '${domain.finalScore}',
+                style: TextStyle(
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.bold,
+                  color: _getCategoryColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      )).toList(),
+    );
+  }
+
+  Widget _buildAdminDetailedDomainItem(domain) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 0.8.h),
+      padding: EdgeInsets.all(2.5.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(6),
+        border: Border(
+          left: BorderSide(
+            color: _getCategoryColor(domain.category),
+            width: 2,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  domain.domain,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: cPrimaryText,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.3.h),
+                decoration: BoxDecoration(
+                  color: _getCategoryColor(domain.category).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  domain.category,
+                  style: TextStyle(
+                    fontSize: 8.sp,
+                    fontWeight: FontWeight.w600,
+                    color: _getCategoryColor(domain.category),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 0.8.h),
+          Row(
+            children: [
+              Expanded(
+                child: _buildAdminScoreDetail('Raw Score', domain.rawScore, Colors.blue[600]!),
+              ),
+              SizedBox(width: 1.5.w),
+              Expanded(
+                child: _buildAdminScoreDetail('Final Score', domain.finalScore, _getCategoryColor(domain.category)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdminScoreDetail(String label, int score, Color color) {
+    return Container(
+      padding: EdgeInsets.all(1.5.w),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8.sp,
+              color: Colors.grey[600],
+            ),
+          ),
+          SizedBox(height: 0.2.h),
+          Text(
+            '$score',
+            style: TextStyle(
+              fontSize: 11.sp,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

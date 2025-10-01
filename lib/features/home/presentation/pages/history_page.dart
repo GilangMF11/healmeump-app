@@ -19,6 +19,7 @@ class HistoryPage extends StatefulWidget {
 class _HistoryPageState extends State<HistoryPage> {
   late HomeBloc _bloc;
   late Future<String> username;
+  final Map<String, bool> _expandedScores = {};
 
   @override
   void initState() {
@@ -331,7 +332,7 @@ class _HistoryPageState extends State<HistoryPage> {
             SizedBox(height: 2.h),
 
             // History Items
-            ...scores.expand((score) => score.domains.map((domain) => _buildHistoryItem(score, domain))).toList(),
+            ...scores.map((score) => _buildScoreGroup(score)).toList(),
             SizedBox(height: 2.h),
           ],
         ),
@@ -377,10 +378,11 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Widget _buildHistoryItem(score, domain) {
+  Widget _buildScoreGroup(score) {
+    final isExpanded = _expandedScores[score.id] ?? false;
+    
     return Container(
       margin: EdgeInsets.only(bottom: 2.h),
-      padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -393,45 +395,181 @@ class _HistoryPageState extends State<HistoryPage> {
         ],
       ),
       child: Column(
+        children: [
+          // Header - Clickable to expand/collapse
+          InkWell(
+            onTap: () {
+              setState(() {
+                _expandedScores[score.id] = !isExpanded;
+              });
+            },
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+              padding: EdgeInsets.all(4.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 12.w,
+                        height: 6.h,
+                        decoration: BoxDecoration(
+                          color: cPrimary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          _getScoreIcon(score.questionnaireCode),
+                          color: cPrimary,
+                          size: 24.sp,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _getTestName(score.questionnaireCode),
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: cPrimaryText,
+                              ),
+                            ),
+                            SizedBox(height: 0.5.h),
+                            Text(
+                              '${_formatDate(score.submittedAt)}',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                        color: Colors.grey[600],
+                        size: 24.sp,
+                      ),
+                    ],
+                  ),
+                  
+                  // Domain summary - always visible
+                  SizedBox(height: 2.h),
+                  _buildDomainSummary(score.domains),
+                ],
+              ),
+            ),
+          ),
+          
+          // Expandable detailed scores
+          if (isExpanded) ...[
+            Divider(height: 1, color: Colors.grey[200]),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Detail Skor',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: cPrimaryText,
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  ...score.domains.map((domain) => _buildDetailedDomainItem(domain)).toList(),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDomainSummary(List domains) {
+    return Row(
+      children: domains.map((domain) => Expanded(
+        child: Container(
+          margin: EdgeInsets.only(right: 1.w),
+          padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.5.h),
+          decoration: BoxDecoration(
+            color: _getScoreColor(domain.category).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: _getScoreColor(domain.category).withValues(alpha: 0.3),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            children: [
+              Text(
+                domain.domain,
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                  color: cPrimaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.5.h),
+              Text(
+                domain.category,
+                style: TextStyle(
+                  fontSize: 9.sp,
+                  fontWeight: FontWeight.w500,
+                  color: _getScoreColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 0.3.h),
+              Text(
+                '${domain.finalScore}',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: _getScoreColor(domain.category),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      )).toList(),
+    );
+  }
+
+  Widget _buildDetailedDomainItem(domain) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.h),
+      padding: EdgeInsets.all(3.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border(
+          left: BorderSide(
+            color: _getScoreColor(domain.category),
+            width: 3,
+          ),
+        ),
+      ),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                width: 12.w,
-                height: 6.h,
-                decoration: BoxDecoration(
-                  color: _getScoreColor(domain.category).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  _getScoreIcon(score.questionnaireCode),
-                  color: _getScoreColor(domain.category),
-                  size: 24.sp,
-                ),
-              ),
-              SizedBox(width: 3.w),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _getTestName(score.questionnaireCode),
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold,
-                        color: cPrimaryText,
-                      ),
-                    ),
-                    SizedBox(height: 0.5.h),
-                    Text(
-                      'Domain: ${domain.domain}',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  domain.domain,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: cPrimaryText,
+                  ),
                 ),
               ),
               Container(
@@ -454,28 +592,44 @@ class _HistoryPageState extends State<HistoryPage> {
           SizedBox(height: 1.h),
           Row(
             children: [
-              Icon(
-                Icons.schedule,
-                size: 14.sp,
-                color: Colors.grey[500],
+              Expanded(
+                child: _buildScoreDetail('Raw Score', domain.rawScore, Colors.blue[600]!),
               ),
-              SizedBox(width: 1.w),
-              Text(
-                _formatDate(score.submittedAt),
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.grey[600],
-                ),
-              ),
-              Spacer(),
-              Text(
-                'ID: ${score.id.substring(0, 8)}...',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: Colors.grey[400],
-                ),
+              SizedBox(width: 2.w),
+              Expanded(
+                child: _buildScoreDetail('Final Score', domain.finalScore, _getScoreColor(domain.category)),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScoreDetail(String label, int score, Color color) {
+    return Container(
+      padding: EdgeInsets.all(2.w),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10.sp,
+              color: Colors.grey[600],
+            ),
+          ),
+          SizedBox(height: 0.3.h),
+          Text(
+            '$score',
+            style: TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),
