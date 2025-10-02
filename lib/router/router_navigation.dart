@@ -12,6 +12,10 @@ import 'package:healmeumpapp/features/mental_health/presentation/pages/depressio
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_counting_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_page.dart';
 import 'package:healmeumpapp/features/mental_health/presentation/pages/mental_health/mental_health_result_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/recommendations/relaxation_practice_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/recommendations/physical_activity_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/recommendations/social_support_page.dart';
+import 'package:healmeumpapp/features/mental_health/presentation/pages/recommendations/healthy_routine_page.dart';
 import 'package:healmeumpapp/features/onbroading/presentation/onbroading_page.dart';
 import 'package:healmeumpapp/features/splahscreen/splashScreen_page.dart';
 import 'package:healmeumpapp/router/pages_names.dart';
@@ -141,6 +145,30 @@ class RouterNavigation {
         path: PAGESNAMES.history.ScreenPath,
         name: PAGESNAMES.history.ScreenName,
         builder: (context, state) => const HistoryPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.relaxationPractice.ScreenPath,
+        name: PAGESNAMES.relaxationPractice.ScreenName,
+        builder: (context, state) => const RelaxationPracticePage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.physicalActivity.ScreenPath,
+        name: PAGESNAMES.physicalActivity.ScreenName,
+        builder: (context, state) => const PhysicalActivityPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.socialSupport.ScreenPath,
+        name: PAGESNAMES.socialSupport.ScreenName,
+        builder: (context, state) => const SocialSupportPage(),
+      ),
+
+      GoRoute(
+        path: PAGESNAMES.healthyRoutine.ScreenPath,
+        name: PAGESNAMES.healthyRoutine.ScreenName,
+        builder: (context, state) => const HealthyRoutinePage(),
       ),
 
       // GoRoute(

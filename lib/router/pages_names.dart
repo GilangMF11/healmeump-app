@@ -15,7 +15,11 @@ enum PAGESNAMES {
   tipDetails,
   about,
   support,
-  history
+  history,
+  relaxationPractice,
+  physicalActivity,
+  socialSupport,
+  healthyRoutine
 }
 
 extension AppPageExtension on PAGESNAMES {
@@ -55,6 +59,14 @@ extension AppPageExtension on PAGESNAMES {
         return '/support';
       case PAGESNAMES.history:
         return '/history';
+      case PAGESNAMES.relaxationPractice:
+        return '/relaxationPractice';
+      case PAGESNAMES.physicalActivity:
+        return '/physicalActivity';
+      case PAGESNAMES.socialSupport:
+        return '/socialSupport';
+      case PAGESNAMES.healthyRoutine:
+        return '/healthyRoutine';
       }
   }
 
@@ -94,6 +106,14 @@ extension AppPageExtension on PAGESNAMES {
         return 'support';
       case PAGESNAMES.history:
         return 'history';
+      case PAGESNAMES.relaxationPractice:
+        return 'relaxationPractice';
+      case PAGESNAMES.physicalActivity:
+        return 'physicalActivity';
+      case PAGESNAMES.socialSupport:
+        return 'socialSupport';
+      case PAGESNAMES.healthyRoutine:
+        return 'healthyRoutine';
     }
   }
 }

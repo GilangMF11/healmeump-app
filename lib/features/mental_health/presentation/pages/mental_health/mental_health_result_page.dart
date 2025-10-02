@@ -606,6 +606,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                       Icons.self_improvement,
                       "Praktik Relaksasi",
                       "Lakukan teknik pernapasan dalam, meditasi, atau yoga untuk mengurangi kecemasan.",
+                      () => RouterNavigation.router.push(PAGESNAMES.relaxationPractice.ScreenPath),
                     ),
                     
                     SizedBox(height: 1.5.h),
@@ -614,6 +615,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                       Icons.sports,
                       "Aktivitas Fisik",
                       "Olahraga teratur dapat membantu mengurangi stres dan meningkatkan mood.",
+                      () => RouterNavigation.router.push(PAGESNAMES.physicalActivity.ScreenPath),
                     ),
                     
                     SizedBox(height: 1.5.h),
@@ -622,6 +624,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                       Icons.people,
                       "Dukungan Sosial",
                       "Jaga hubungan dengan keluarga dan teman. Berbicara tentang perasaan dapat membantu.",
+                      () => RouterNavigation.router.push(PAGESNAMES.socialSupport.ScreenPath),
                     ),
                     
                     SizedBox(height: 1.5.h),
@@ -630,6 +633,7 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
                       Icons.schedule,
                       "Rutinitas Sehat",
                       "Jaga pola tidur yang teratur, makan makanan bergizi, dan hindari konsumsi berlebihan.",
+                      () => RouterNavigation.router.push(PAGESNAMES.healthyRoutine.ScreenPath),
                     ),
                   ],
                 ),
@@ -762,48 +766,71 @@ class _MentalHealthResultPageState extends State<MentalHealthResultPage> {
     );
   }
 
-  Widget _buildRecommendationItem(IconData icon, String title, String description) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 8.w,
-          height: 8.w,
-          decoration: BoxDecoration(
-            color: cPrimary.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            icon,
-            color: cPrimary,
-            size: 4.w,
-          ),
+  Widget _buildRecommendationItem(IconData icon, String title, String description, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(2.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey[200]!),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
-        SizedBox(width: 3.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.bold,
-                  color: cPrimaryText,
-                ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 8.w,
+              height: 8.w,
+              decoration: BoxDecoration(
+                color: cPrimary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
               ),
-              SizedBox(height: 0.5.h),
-              Text(
-                description,
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.grey[600],
-                ),
+              child: Icon(
+                icon,
+                color: cPrimary,
+                size: 4.w,
               ),
-            ],
-          ),
+            ),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                      color: cPrimaryText,
+                    ),
+                  ),
+                  SizedBox(height: 0.5.h),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.grey[400],
+              size: 16.sp,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 

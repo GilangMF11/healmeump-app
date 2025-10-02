@@ -291,6 +291,7 @@ class _DepressionResultPageState extends State<DepressionResultPage> {
                       Icons.people,
                       "Dukungan Sosial",
                       "Jaga hubungan dengan keluarga dan teman. Berbicara tentang perasaan dapat membantu.",
+                      () => RouterNavigation.router.push(PAGESNAMES.socialSupport.ScreenPath),
                     ),
                     
                     SizedBox(height: 1.5.h),
@@ -299,6 +300,7 @@ class _DepressionResultPageState extends State<DepressionResultPage> {
                       Icons.schedule,
                       "Rutinitas Sehat",
                       "Jaga pola tidur yang teratur, makan makanan bergizi, dan lakukan aktivitas fisik.",
+                      () => RouterNavigation.router.push(PAGESNAMES.healthyRoutine.ScreenPath),
                     ),
                   ],
                 ),
@@ -431,8 +433,8 @@ class _DepressionResultPageState extends State<DepressionResultPage> {
     );
   }
 
-  Widget _buildRecommendationItem(IconData icon, String title, String description) {
-    return Row(
+  Widget _buildRecommendationItem(IconData icon, String title, String description, [VoidCallback? onTap]) {
+    Widget content = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
@@ -472,8 +474,38 @@ class _DepressionResultPageState extends State<DepressionResultPage> {
             ],
           ),
         ),
+        if (onTap != null)
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey[400],
+            size: 16.sp,
+          ),
       ],
     );
+
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.all(2.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey[200]!),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: content,
+        ),
+      );
+    }
+
+    return content;
   }
 
   // Fungsi untuk menentukan kategori berdasarkan skor BDI
