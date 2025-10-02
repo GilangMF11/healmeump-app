@@ -27,27 +27,58 @@ class _MentalHealthCountingPageState extends State<MentalHealthCountingPage> {
     super.initState();
     mentalhealthBloc = context.read<MentalhealthBloc>();
     
+    // Reset flags untuk memastikan tes baru bisa berjalan
+    _hasSubmitted = false;
+    _hasNavigated = false;
+    
     // Ambil responseId dari state
     final currentState = mentalhealthBloc.state;
     responseId = currentState.dataCreateAnswers?.data.responseId;
     
-    // Eksekusi submit answers ketika page dimuat (hanya jika belum loading atau loaded)
-    if (responseId != null && 
-        currentState.loadingSubmitAnswers != ResponseValidation.LOADING &&
-        currentState.statusSubmitAnswers != ResponseValidation.SUCCESS &&
-        currentState.statusSubmitAnswers != ResponseValidation.FAIL) {
+    print('=== COUNTING PAGE INIT ===');
+    print('Response ID: $responseId');
+    print('Loading status: ${currentState.loadingSubmitAnswers}');
+    print('Submit status: ${currentState.statusSubmitAnswers}');
+    
+    // Eksekusi submit answers ketika page dimuat
+    if (responseId != null) {
+      // Reset submit state jika ada data dari tes sebelumnya
+      if (currentState.statusSubmitAnswers == ResponseValidation.SUCCESS ||
+          currentState.statusSubmitAnswers == ResponseValidation.FAIL) {
+        print('=== RESETTING SUBMIT STATE FROM PREVIOUS TEST ===');
+        mentalhealthBloc.add(ResetSubmitStateEvent());
+      }
       
-      print('=== EXECUTING SUBMIT ANSWERS FROM COUNTING PAGE ===');
-      print('Response ID: $responseId');
-      _hasSubmitted = true; // Set flag agar tidak submit lagi
-      
-      // Delay sedikit untuk memastikan widget sudah siap
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && _hasSubmitted && !_hasNavigated) {
-          mentalhealthBloc.add(SubmitAnswersEvent(responseId: responseId!));
+      // Submit answers jika belum pernah submit atau gagal
+      if (currentState.loadingSubmitAnswers != ResponseValidation.LOADING &&
+          currentState.statusSubmitAnswers != ResponseValidation.SUCCESS) {
+        
+        print('=== EXECUTING SUBMIT ANSWERS FROM COUNTING PAGE ===');
+        _hasSubmitted = true; // Set flag agar tidak submit lagi
+        
+        // Delay sedikit untuk memastikan widget sudah siap
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && _hasSubmitted && !_hasNavigated) {
+            mentalhealthBloc.add(SubmitAnswersEvent(responseId: responseId!));
+          }
+        });
+      } else {
+        print('=== SUBMIT ALREADY IN PROGRESS OR COMPLETED ===');
+        if (currentState.statusSubmitAnswers == ResponseValidation.SUCCESS) {
+          // Jika sudah berhasil, langsung navigate
+          _hasNavigated = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              Future.delayed(Duration(seconds: 1), () {
+                if (mounted && _hasNavigated) {
+                  RouterNavigation.router.push(PAGESNAMES.mentalHealthResult.ScreenPath);
+                }
+              });
+            }
+          });
         }
-      });
-    } else if (responseId == null) {
+      }
+    } else {
       print('=== ERROR: Response ID not found ===');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -56,11 +87,14 @@ class _MentalHealthCountingPageState extends State<MentalHealthCountingPage> {
             backgroundColor: Colors.red,
           ),
         );
+        
+        // Navigate back jika tidak ada response ID
+        Future.delayed(Duration(seconds: 2), () {
+          if (mounted) {
+            RouterNavigation.router.pop();
+          }
+        });
       }
-    } else {
-      print('=== SUBMIT ALREADY EXECUTED OR IN PROGRESS ===');
-      print('Loading status: ${currentState.loadingSubmitAnswers}');
-      print('Submit status: ${currentState.statusSubmitAnswers}');
     }
   }
 

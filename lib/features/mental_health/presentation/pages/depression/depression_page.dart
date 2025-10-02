@@ -75,6 +75,9 @@ class _DepressionPageState extends State<DepressionPage> {
       currentQuestionIndex = 0;
       answers.clear();
       responseId = null;
+      
+      // Reset state di bloc
+      mentalhealthBloc.add(ResetMentalHealthStateEvent());
     }
   }
 

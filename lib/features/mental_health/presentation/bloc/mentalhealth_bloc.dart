@@ -14,6 +14,8 @@ class MentalhealthBloc extends Bloc<MentalhealthEvent, MentalhealthState> {
     on<CreateAnswersEvent>((_createAnswers));
     on<SaveAnswersEvent>((_saveAnswers));
     on<SubmitAnswersEvent>((_submitAnswers));
+    on<ResetMentalHealthStateEvent>((_resetState));
+    on<ResetSubmitStateEvent>((_resetSubmitState));
   }
 
   Future<void> _getQuestionnairebyCodeName(
@@ -110,5 +112,22 @@ class MentalhealthBloc extends Bloc<MentalhealthEvent, MentalhealthState> {
           messageSubmitAnswers: success.message,
           dataSubmitAnswers: success));
     });
+  }
+
+  Future<void> _resetState(
+      ResetMentalHealthStateEvent event, Emitter<MentalhealthState> emit) async {
+    print("=== RESETTING MENTAL HEALTH STATE ===");
+    emit(const MentalhealthState());
+  }
+
+  Future<void> _resetSubmitState(
+      ResetSubmitStateEvent event, Emitter<MentalhealthState> emit) async {
+    print("=== RESETTING SUBMIT STATE ONLY ===");
+    emit(state.copyWith(
+      loadingSubmitAnswers: false,
+      statusSubmitAnswers: null,
+      messageSubmitAnswers: null,
+      dataSubmitAnswers: null,
+    ));
   }
 }

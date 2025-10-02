@@ -67,8 +67,8 @@ class _MentalHealthPageState extends State<MentalHealthPage> {
       answers.clear();
       responseId = null;
       
-      // Reset state di bloc (jika ada method reset)
-      // mentalhealthBloc.add(ResetMentalHealthStateEvent());
+      // Reset state di bloc
+      mentalhealthBloc.add(ResetMentalHealthStateEvent());
     }
   }
 

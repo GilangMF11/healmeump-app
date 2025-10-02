@@ -68,3 +68,11 @@ class SubmitAnswersEvent extends MentalhealthEvent {
   @override
   List<Object> get props => [responseId];
 }
+
+class ResetMentalHealthStateEvent extends MentalhealthEvent {
+  const ResetMentalHealthStateEvent();
+}
+
+class ResetSubmitStateEvent extends MentalhealthEvent {
+  const ResetSubmitStateEvent();
+}
